@@ -10,17 +10,25 @@
     </data>
 
     <android.support.constraint.ConstraintLayout
-        android:visibility="@{!model.loading}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.ragdroid.mvi.main.MainActivityFragment"
         tools:showIn="@layout/activity_main">
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"
-            bind:refreshing="@{model.pullToRefreshing}"
-            bind:enabled="@{true}"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="@{!model.loading}"
+            bind:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent"
+            bind:refreshing="@{model.pullToRefreshing}">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listView"
@@ -29,14 +37,21 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <ProgressBar
-            android:visibility="@{model.loading}"
             android:id="@+id/loader"
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:indeterminate="true"
-            style="@style/Widget.AppCompat.ProgressBar"
-            />
+            android:visibility="@{model.loading}"
+            bind:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>

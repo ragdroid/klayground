@@ -15,7 +15,7 @@ data class MainViewState(
 
     companion object Factory {
         fun init() = MainViewState(
-                loading = false,
+                loading = true,
                 characters = emptyList(),
                 loadingError = null,
                 pullToRefreshing = false,

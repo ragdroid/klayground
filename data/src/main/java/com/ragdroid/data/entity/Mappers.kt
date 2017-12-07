@@ -20,7 +20,7 @@ class CharacterMapper
             CharacterMarvel(it.id,
                     it.name,
                     it.description,
-                    it.thumbnail.path)
+                    "${it.thumbnail.path}.${it.thumbnail.extension}")
         }
 
         return character;

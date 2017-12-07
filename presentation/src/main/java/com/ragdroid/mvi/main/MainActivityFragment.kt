@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.fueled.reclaim.ItemsViewAdapter
+import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout
 import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
@@ -24,7 +25,7 @@ class MainActivityFragment : DaggerFragment(), MainFragmentView {
     lateinit @Inject var presenter: MainFragmentPresenter
     //delegate the binding initialization to BindFragment delegate
     private val binding: FragmentMainBinding by BindFragment(R.layout.fragment_main)
-    private val adapter = ItemsViewAdapter(context)
+    private lateinit var adapter: ItemsViewAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -36,10 +37,13 @@ class MainActivityFragment : DaggerFragment(), MainFragmentView {
         presenter.attachView(this)
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.VERTICAL
+        adapter = ItemsViewAdapter(context)
         binding.listView.layoutManager = manager
         binding.listView.adapter = adapter
 

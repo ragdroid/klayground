@@ -63,10 +63,10 @@ constructor(val requestManager: RequestManager) {
 
 
 
-    @android.databinding.BindingAdapter(value = *arrayOf("refreshing", "enabled"), requireAll = false)
-    fun setPulltoRefreshing(swipeRefreshLayout: SwipeRefreshLayout, refreshing: Boolean, enabled: Boolean) {
+    @android.databinding.BindingAdapter(value = *arrayOf("refreshing"))
+    fun setPulltoRefreshing(swipeRefreshLayout: SwipeRefreshLayout, refreshing: Boolean) {
         swipeRefreshLayout.isRefreshing = refreshing
-        swipeRefreshLayout.isEnabled = enabled
+        swipeRefreshLayout.isEnabled = true
     }
 
 }

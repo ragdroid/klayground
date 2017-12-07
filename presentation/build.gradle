@@ -16,7 +16,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "PUBLIC_KEY", "\"${marvelPublicKey}\"")
         buildConfigField("String", "PRIVATE_KEY", "\"${marvelPrivateKey}\"")
-        buildConfigField("String", "BASE_URL", "\"http://ragdroid.com\"")
+        buildConfigField("String", "BASE_URL", "\"http://gateway.marvel.com/v1/public/\"")
     }
     buildTypes {
         release {
