@@ -15,6 +15,4 @@ abstract class ActivityBindingModule {
     @ActivityScope
     internal abstract fun mainActivity(): MainActivity
 
-    @ContributesAndroidInjector
-    internal abstract fun mainActivityFragment(): MainActivityFragment
 }

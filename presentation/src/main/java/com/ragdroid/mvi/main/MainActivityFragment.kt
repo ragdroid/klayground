@@ -8,16 +8,19 @@ import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
 import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
 /**
  * A placeholder fragment containing a simple view.
  */
 class MainActivityFragment : DaggerFragment() {
 
+    lateinit @Inject var presenter: MainFragmentContract.Presenter
     private val binding: FragmentMainBinding by BindFragment(R.layout.fragment_main)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return binding.root
     }
+
 }

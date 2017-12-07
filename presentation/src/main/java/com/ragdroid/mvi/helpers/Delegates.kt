@@ -15,8 +15,11 @@ import kotlin.reflect.KProperty
 
 /**
  * This is a replacement for DataBindingUtil.setContentView(activity, layoutRes)
+ *
+ * use val binding: ActivityMainBinding by BindActivity(R.layout.activity_main) instead
+ * Inpiration Lisa Wray
  */
-class BindDelegate<in R: Activity, out T: ViewDataBinding>(
+class BindActivity<in R: Activity, out T: ViewDataBinding>(
         @LayoutRes private val layoutRes: Int) {
 
     private var value: T? = null
@@ -28,6 +31,12 @@ class BindDelegate<in R: Activity, out T: ViewDataBinding>(
     }
 }
 
+/**
+ * This is a replacement for DataBindingUtil.inflate(inflater, layoutRes,
+ * rootView, boolean)
+ *
+ * use private val binding: FragmentMainBinding by BindFragment(R.layout.fragment_main) instead
+ */
 class BindFragment<in R: Fragment, out T: ViewDataBinding>(
         @LayoutRes private val layoutRes: Int) {
 
