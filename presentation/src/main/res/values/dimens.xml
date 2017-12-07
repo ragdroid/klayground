@@ -35,6 +35,6 @@
     <dimen name="text_xsmall">10sp</dimen>
     <dimen name="logo_size">100dp</dimen>
     <dimen name="min_btn_height">48dp</dimen>
-    <dimen name="character_item_height">100dp</dimen>
+    <dimen name="item_edge">100dp</dimen>
 
 </resources>

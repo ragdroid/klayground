@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.fueled.reclaim.ItemsViewAdapter
-import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout
 import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding

@@ -19,10 +19,6 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:visibility="@{!model.loading}"
             bind:layout_constraintBottom_toBottomOf="parent"
             bind:layout_constraintEnd_toEndOf="parent"
@@ -31,6 +27,11 @@
             bind:refreshing="@{model.pullToRefreshing}">
 
             <android.support.v7.widget.RecyclerView
+                android:paddingBottom="@dimen/space"
+                android:paddingEnd="@dimen/space"
+                android:paddingStart="@dimen/space"
+                android:paddingTop="@dimen/space"
+                android:clipToPadding="false"
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
@@ -42,10 +43,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="@dimen/space"
+            android:layout_marginEnd="@dimen/space"
+            android:layout_marginStart="@dimen/space"
+            android:layout_marginTop="@dimen/space"
             android:indeterminate="true"
             android:visibility="@{model.loading}"
             bind:layout_constraintBottom_toBottomOf="parent"
