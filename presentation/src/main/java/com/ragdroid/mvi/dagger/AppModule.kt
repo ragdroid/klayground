@@ -20,27 +20,20 @@ import javax.inject.Singleton
 class AppModule {
 
     @Provides
-    fun provideMarvelConfig(): AppConfig {
-        return AppConfig(BuildConfig.BASE_URL,
+    fun provideMarvelConfig(): AppConfig =
+            AppConfig(BuildConfig.BASE_URL,
                 BuildConfig.PUBLIC_KEY,
                 BuildConfig.PRIVATE_KEY)
-    }
 
 
     @Singleton
     @Provides
-    fun provideGlide(application: MarvelApplication): RequestManager {
-        return Glide.with(application)
-    }
+    fun provideGlide(application: MarvelApplication): RequestManager = Glide.with(application)
 
     @Provides
-    fun provideHelpers(helper: AndroidHelpers): Helpers {
-        return helper
-    }
+    fun provideHelpers(helper: AndroidHelpers): Helpers = helper
 
     @Provides
-    fun provideSchedulers(providerImpl: SchedulersProviderImpl): SchedulerProvider {
-        return providerImpl
-    }
+    fun provideSchedulers(providerImpl: SchedulersProviderImpl): SchedulerProvider = providerImpl
 
 }

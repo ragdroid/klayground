@@ -76,9 +76,7 @@ class MarvelBindingComponent
 @Inject constructor(val adapter: MarvelBindingAdapter):
         android.databinding.DataBindingComponent {
 
-    override fun getMarvelBindingAdapter(): MarvelBindingAdapter {
-        return adapter
-    }
+    override fun getMarvelBindingAdapter(): MarvelBindingAdapter = adapter
 
 }
 
