@@ -1,4 +1,4 @@
-package com.ragdroid.mvi.view
+package com.ragdroid.mvi.main
 
 import android.os.Bundle
 import android.view.LayoutInflater

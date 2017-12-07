@@ -1,7 +1,7 @@
 package com.ragdroid.mvi.dagger
 
-import com.ragdroid.mvi.view.MainActivity
-import com.ragdroid.mvi.view.MainActivityFragment
+import com.ragdroid.mvi.main.MainActivity
+import com.ragdroid.mvi.main.MainActivityFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

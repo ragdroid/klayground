@@ -1,8 +1,7 @@
-package com.ragdroid.mvi.view
+package com.ragdroid.mvi.main
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import com.ragdroid.mvi.R
 import dagger.android.support.DaggerAppCompatActivity
 
