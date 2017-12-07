@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools">
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="model"
+            type="com.ragdroid.mvi.main.MainViewState"/>
+    </data>
 
     <android.support.constraint.ConstraintLayout
+        android:visibility="@{!model.loading}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.ragdroid.mvi.main.MainActivityFragment"
         tools:showIn="@layout/activity_main">
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"
+            bind:refreshing="@{model.pullToRefreshing}"
+            bind:enabled="@{true}"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -17,6 +27,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </android.support.v4.widget.SwipeRefreshLayout>
+
+        <ProgressBar
+            android:visibility="@{model.loading}"
+            android:id="@+id/loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            style="@style/Widget.AppCompat.ProgressBar"
+            />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

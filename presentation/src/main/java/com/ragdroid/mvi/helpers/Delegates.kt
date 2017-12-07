@@ -6,6 +6,7 @@ import android.databinding.ViewDataBinding
 import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
 import android.view.ViewGroup
+import java.io.IOException
 import kotlin.reflect.KProperty
 
 /**
@@ -25,8 +26,9 @@ class BindActivity<in R: Activity, out T: ViewDataBinding>(
     private var value: T? = null
 
     operator fun getValue(thisRef: R, property: KProperty<*>): T {
-        value?.let { return it }
-        value = DataBindingUtil.setContentView<T>(thisRef, layoutRes)
+        if (value == null) {
+            value = DataBindingUtil.setContentView<T>(thisRef, layoutRes)
+        }
         return value!!
     }
 }
@@ -43,9 +45,10 @@ class BindFragment<in R: Fragment, out T: ViewDataBinding>(
     private var value: T? = null
 
     operator fun getValue(thisRef: R, property: KProperty<*>): T {
-        value?.let { return it }
-        value = DataBindingUtil.inflate<T>(thisRef.layoutInflater, layoutRes,
-                thisRef.view?.rootView as ViewGroup?, false)
+        if (value == null) {
+            value = DataBindingUtil.inflate<T>(thisRef.layoutInflater, layoutRes,
+                    thisRef.view?.rootView as ViewGroup?, false)
+        }
         return value!!
     }
 }

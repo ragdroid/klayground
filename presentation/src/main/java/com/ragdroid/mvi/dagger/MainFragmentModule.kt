@@ -1,7 +1,7 @@
 package com.ragdroid.mvi.dagger
 
-import com.ragdroid.mvi.main.MainFragmentContract
-import com.ragdroid.mvi.presenters.MainFragmentPresenter
+import com.ragdroid.mvi.main.MainFragmentPresenter
+import com.ragdroid.mvi.presenters.MainFragmentPresenterImpl
 import dagger.Binds
 import dagger.Module
 
@@ -14,5 +14,5 @@ abstract class MainFragmentModule {
     @Binds
     @FragmentScope
     abstract fun
-            mainFragmentPresenter(presenter: MainFragmentPresenter): MainFragmentContract.Presenter
+            mainFragmentPresenter(presenter: MainFragmentPresenterImpl): MainFragmentPresenter
 }

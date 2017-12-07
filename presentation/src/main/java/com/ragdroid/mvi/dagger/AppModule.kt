@@ -2,9 +2,13 @@ package com.ragdroid.mvi.dagger
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.ragdroid.data.base.Helpers
+import com.ragdroid.data.base.SchedulerProvider
 import com.ragdroid.data.entity.AppConfig
 import com.ragdroid.mvi.BuildConfig
 import com.ragdroid.mvi.MarvelApplication
+import com.ragdroid.mvi.helpers.AndroidHelpers
+import com.ragdroid.mvi.helpers.SchedulersProviderImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -27,6 +31,16 @@ class AppModule {
     @Provides
     fun provideGlide(application: MarvelApplication): RequestManager {
         return Glide.with(application)
+    }
+
+    @Provides
+    fun provideHelpers(helper: AndroidHelpers): Helpers {
+        return helper
+    }
+
+    @Provides
+    fun provideSchedulers(providerImpl: SchedulersProviderImpl): SchedulerProvider {
+        return providerImpl
     }
 
 }

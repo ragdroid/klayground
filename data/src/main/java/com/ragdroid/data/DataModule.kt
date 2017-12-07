@@ -16,4 +16,9 @@ class DataModule {
         return ApiConfig(appConfig.baseUrl)
     }
 
+    @Provides
+    fun provideMainRepository(repository: MainRepositoryImpl): MainRepository {
+        return repository
+    }
+
 }

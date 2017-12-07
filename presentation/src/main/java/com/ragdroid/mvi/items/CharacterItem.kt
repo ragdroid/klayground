@@ -18,7 +18,7 @@ class CharacterItem(val model: CharacterModel) :
         viewHolder.binding.model = model
     }
 
-    override fun onCreateViewHolder(p0: View?): ViewHolder = ViewHolder()
+    override fun onCreateViewHolder(view: View): ViewHolder = ViewHolder(view)
 
     override fun getType(): Enum<out Enum<*>> = ItemTypes.CHARACTER_MARVEL
 

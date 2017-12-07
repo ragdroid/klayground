@@ -1,4 +1,4 @@
-package com.ragdroid.mvi.models
+package com.ragdroid.mvi.main
 
 import com.ragdroid.data.entity.CharacterMarvel
 
@@ -25,11 +25,11 @@ data class MainViewState(
 }
 
 
-sealed class MainResults {
-    object Loading: MainResults()
-    data class LoadingError(val throwable: Throwable): MainResults()
-    data class LoadingComplete(val characters: List<CharacterMarvel>): MainResults()
-    object PullToRefreshing: MainResults()
-    data class PullToRefreshError(val throwable: Throwable): MainResults()
-    data class PullToRefreshComplete(val characters: List<CharacterMarvel>): MainResults()
+sealed class MainResult {
+    object Loading: MainResult()
+    data class LoadingError(val throwable: Throwable): MainResult()
+    data class LoadingComplete(val characters: List<CharacterMarvel>): MainResult()
+    object PullToRefreshing: MainResult()
+    data class PullToRefreshError(val throwable: Throwable): MainResult()
+    data class PullToRefreshComplete(val characters: List<CharacterMarvel>): MainResult()
 }

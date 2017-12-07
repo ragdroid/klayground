@@ -1,9 +1,13 @@
 package com.ragdroid.mvi.helpers
 
+import android.databinding.BindingConversion
 import android.graphics.drawable.Drawable
+import android.support.v4.widget.SwipeRefreshLayout
+import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
+import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -59,7 +63,14 @@ constructor(val requestManager: RequestManager) {
 
 
 
+    @android.databinding.BindingAdapter(value = *arrayOf("refreshing", "enabled"), requireAll = false)
+    fun setPulltoRefreshing(swipeRefreshLayout: SwipeRefreshLayout, refreshing: Boolean, enabled: Boolean) {
+        swipeRefreshLayout.isRefreshing = refreshing
+        swipeRefreshLayout.isEnabled = enabled
+    }
+
 }
+
 
 class MarvelBindingComponent
 @Inject constructor(val adapter: MarvelBindingAdapter):
@@ -69,4 +80,10 @@ class MarvelBindingComponent
         return adapter
     }
 
+}
+
+@BindingConversion
+fun convertBooleanToVisibility(visible: Boolean): Int = when(visible) {
+    true -> View.VISIBLE
+    false -> View.GONE
 }

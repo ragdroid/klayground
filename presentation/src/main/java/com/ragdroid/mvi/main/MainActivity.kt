@@ -9,9 +9,9 @@ import dagger.android.support.DaggerAppCompatActivity
 
 import javax.inject.Inject
 
-class MainActivity : DaggerAppCompatActivity(), MainActivityContract.View {
+class MainActivity : DaggerAppCompatActivity(), MainView {
 
-    @Inject lateinit var presenter: MainActivityContract.Presenter
+    @Inject lateinit var presenter: MainPresenter
 
     val binding: ActivityMainBinding by BindActivity(R.layout.activity_main)
 
@@ -23,8 +23,13 @@ class MainActivity : DaggerAppCompatActivity(), MainActivityContract.View {
             Snackbar.make(view, "presenter $presenter injected", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
+        presenter.attachView(this)
     }
 
+    override fun onDestroy() {
+        presenter.detachView()
+        super.onDestroy()
+    }
 }
 
 
