@@ -1,0 +1,85 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.ragdroid.mvi"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "PUBLIC_KEY", "\"${marvelPublicKey}\"")
+        buildConfigField("String", "PRIVATE_KEY", "\"${marvelPrivateKey}\"")
+        buildConfigField("String", "BASE_URL", "\"http://ragdroid.com\"")
+    }
+    buildTypes {
+        release {
+            postprocessing {
+                removeUnusedCode false
+                removeUnusedResources false
+                obfuscate false
+                optimizeCode false
+                proguardFile 'proguard-rules.pro'
+            }
+        }
+    }
+    dataBinding {
+        enabled true
+    }
+}
+
+
+dependencies {
+    api project(':data')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+
+
+    implementation "android.arch.lifecycle:extensions:$arch_comp"
+    implementation "android.arch.lifecycle:reactivestreams:$arch_comp"
+    kapt "android.arch.lifecycle:compiler:$arch_comp"
+
+    implementation "android.arch.paging:runtime:$arch_comp_paging"
+
+    implementation "com.android.support:appcompat-v7:$support_library"
+    implementation "com.android.support:design:$support_library"
+
+    implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
+
+
+    implementation "com.google.dagger:dagger:$dagger"
+    implementation "com.google.dagger:dagger-android:$dagger"
+    implementation "com.google.dagger:dagger-android-support:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
+    kapt "com.google.dagger:dagger-android-processor:$dagger"
+
+    implementation "io.reactivex.rxjava2:rxjava:$rx"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
+
+
+    testImplementation "junit:junit:$junit"
+
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espresso", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+
+    debugImplementation "nl.littlerobots.rxlint:rxlint:$rxlint"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary"
+
+    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
+}
