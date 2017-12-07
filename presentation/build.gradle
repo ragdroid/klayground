@@ -43,6 +43,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
 
     implementation "com.jakewharton.timber:timber:$timberVersion"
+    implementation "com.github.fueled:reclaim:$reclaim"
 
 
     implementation "android.arch.lifecycle:extensions:$arch_comp"
@@ -67,6 +68,9 @@ dependencies {
 
     implementation "io.reactivex.rxjava2:rxjava:$rx"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
+    implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBindings"
+    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:$rxBindings"
+    implementation "com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:$rxBindings"
 
 
     testImplementation "junit:junit:$junit"

@@ -13,8 +13,11 @@ import javax.inject.Singleton
 @Singleton
 class MarvelBindingAdapter @Inject
 constructor(val requestManager: RequestManager) {
+
+
     /**
      * Bind Glide with an ImageView.
+     * https://medium.com/fueled-android/data-binding-adapter-write-bind-repeat-50e9c64fe806
      *
      * @param view the ImageView to bind to Glide.
      * @param src The URL of the image to load.
