@@ -12,7 +12,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.ragdroid.mvi.main.MainActivityFragment"
+        tools:context="com.ragdroid.mvi.main.MainFragment"
         tools:showIn="@layout/activity_main">
 
         <android.support.v4.widget.SwipeRefreshLayout

@@ -19,17 +19,18 @@ import javax.inject.Inject
 /**
  * A placeholder fragment containing a simple view.
  */
-class MainActivityFragment : DaggerFragment(), MainFragmentView {
+class MainFragment : DaggerFragment(), MainFragmentView {
 
     lateinit @Inject var presenter: MainFragmentPresenter
     //delegate the binding initialization to BindFragment delegate
     private val binding: FragmentMainBinding by BindFragment(R.layout.fragment_main)
-    private lateinit var adapter: ItemsViewAdapter
+    private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
+         ItemsViewAdapter(context)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return binding.root
-    }
+                              savedInstanceState: Bundle?): View? = binding.root
+
 
     override fun onStart() {
         super.onStart()
@@ -42,7 +43,6 @@ class MainActivityFragment : DaggerFragment(), MainFragmentView {
         super.onViewCreated(view, savedInstanceState)
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.VERTICAL
-        adapter = ItemsViewAdapter(context)
         binding.listView.layoutManager = manager
         binding.listView.adapter = adapter
 

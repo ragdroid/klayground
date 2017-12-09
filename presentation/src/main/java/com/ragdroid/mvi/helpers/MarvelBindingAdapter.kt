@@ -30,8 +30,9 @@ constructor(val requestManager: RequestManager) {
      * @param blurValue The blur radius value between 1 and 25.
      * @param cropCircle Crop the image in a circle of not.
      */
-    @android.databinding.BindingAdapter(value = *arrayOf("src", "placeholder", "error", "blur",
-            "cropCircle", "centerCrop"), requireAll = false)
+    @android.databinding.BindingAdapter(
+            value = ["src", "placeholder", "error", "blur", "cropCircle", "centerCrop"],
+            requireAll = false)
     fun setImageUrl(view: ImageView, src: String, placeholder: Drawable?, error: Drawable?,
                     blurValue: Int, cropCircle: Boolean, centerCrop: Boolean) {
 
@@ -63,7 +64,7 @@ constructor(val requestManager: RequestManager) {
 
 
 
-    @android.databinding.BindingAdapter(value = *arrayOf("refreshing"))
+    @android.databinding.BindingAdapter(value = ["refreshing"])
     fun setPulltoRefreshing(swipeRefreshLayout: SwipeRefreshLayout, refreshing: Boolean) {
         swipeRefreshLayout.isRefreshing = refreshing
         swipeRefreshLayout.isEnabled = true

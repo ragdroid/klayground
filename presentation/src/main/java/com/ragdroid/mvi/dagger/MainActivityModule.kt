@@ -1,6 +1,6 @@
 package com.ragdroid.mvi.dagger
 
-import com.ragdroid.mvi.main.MainActivityFragment
+import com.ragdroid.mvi.main.MainFragment
 import com.ragdroid.mvi.main.MainPresenter
 import com.ragdroid.mvi.presenters.MainActivityPresenterImpl
 import dagger.Binds
@@ -17,7 +17,7 @@ abstract class MainActivityModule {
     @ActivityScope
     abstract fun presenter(presenter: MainActivityPresenterImpl): MainPresenter
 
-    @ContributesAndroidInjector(modules = arrayOf(MainFragmentModule::class))
+    @ContributesAndroidInjector(modules = [ MainFragmentModule::class ])
     @FragmentScope
-    internal abstract fun mainActivityFragment(): MainActivityFragment
+    internal abstract fun mainActivityFragment(): MainFragment
 }
