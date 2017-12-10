@@ -17,10 +17,10 @@ import javax.inject.Inject
 class MainRepositoryImpl
     @Inject
     constructor(
-            val marvelApi: MarvelApi,
-            val characterMapper: CharacterMapper,
-            val config: AppConfig,
-            val helpers: Helpers): MainRepository {
+            private val marvelApi: MarvelApi,
+            private val characterMapper: CharacterMapper,
+            private val config: AppConfig,
+            private val helpers: Helpers): MainRepository {
 
 
     override fun fetchCharacters(): Single<List<CharacterMarvel>> {
@@ -45,7 +45,7 @@ class MainRepositoryImpl
                 timeStamp,
                 0,
                 10,
-                null
+                ""
         )
     }
 
