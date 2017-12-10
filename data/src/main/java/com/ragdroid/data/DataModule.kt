@@ -12,8 +12,9 @@ import dagger.Provides
 class DataModule {
 
     @Provides
-    fun provideApiConfig(appConfig: AppConfig): ApiConfig {
-        return ApiConfig(appConfig.baseUrl)
-    }
+    fun provideApiConfig(appConfig: AppConfig): ApiConfig = ApiConfig(appConfig.baseUrl)
+
+    @Provides
+    fun provideMainRepository(repository: MainRepositoryImpl): MainRepository = repository
 
 }

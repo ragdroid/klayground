@@ -1,18 +1,23 @@
 package com.ragdroid.mvi
 
+import android.databinding.DataBindingUtil
 import com.ragdroid.mvi.dagger.DaggerAppComponent
+import com.ragdroid.mvi.helpers.MarvelBindingComponent
 import com.squareup.leakcanary.LeakCanary
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * Created by garimajain on 18/11/17.
  */
-class RagdroidApplication: DaggerApplication() {
+class MarvelApplication : DaggerApplication() {
+
+    @Inject lateinit var bindingComponent: MarvelBindingComponent
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerAppComponent.builder().build()
+        return DaggerAppComponent.builder().application(this).build()
     }
 
 
@@ -20,6 +25,7 @@ class RagdroidApplication: DaggerApplication() {
         super.onCreate()
         plantTimber()
         attachLeakCanary()
+        DataBindingUtil.setDefaultComponent(bindingComponent)
     }
 
 

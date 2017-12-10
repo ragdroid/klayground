@@ -1,7 +1,6 @@
 package com.ragdroid.mvi.dagger
 
-import com.ragdroid.mvi.view.MainActivity
-import com.ragdroid.mvi.view.MainActivityFragment
+import com.ragdroid.mvi.main.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -11,10 +10,8 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ActivityBindingModule {
 
-    @ContributesAndroidInjector(modules = arrayOf(MainActivityModule::class))
+    @ContributesAndroidInjector(modules = [MainActivityModule::class])
     @ActivityScope
     internal abstract fun mainActivity(): MainActivity
 
-    @ContributesAndroidInjector
-    internal abstract fun mainActivityFragment(): MainActivityFragment
 }

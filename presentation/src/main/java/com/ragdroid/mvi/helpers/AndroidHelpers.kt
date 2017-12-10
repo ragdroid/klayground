@@ -5,11 +5,12 @@ import timber.log.Timber
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import javax.inject.Inject
 
 /**
  * Created by garimajain on 18/11/17.
  */
-class AndroidHelpers: Helpers {
+class AndroidHelpers @Inject constructor(): Helpers {
     override fun buildMD5Digest(message: String): String {
         try {
             val messageDigest = MessageDigest.getInstance("MD5")
