@@ -33,16 +33,16 @@ object MainRepositorySpec: Spek({
             config = mock(AppConfig::class)
             helpers = mock(Helpers::class)
 
-            `when`(config.publicKey).thenReturn("publicKEY")
-            `when`(config.privateKey).thenReturn("privateKey")
-            `when`(mapper.map(any())).thenReturn(getFakeMarvelCharacterData())
-            `when`(helpers.buildMD5Digest(anyString())).thenReturn("Digest")
+            whenever(config.publicKey).thenReturn("publicKEY")
+            whenever(config.privateKey).thenReturn("privateKey")
+            whenever(mapper.map(any())).thenReturn(getFakeMarvelCharacterData())
+            whenever(helpers.buildMD5Digest(anyString())).thenReturn("Digest")
 
             repository = MainRepositoryImpl(mockApi, mapper, config, helpers)
         }
 
         on("fetching from repository") {
-            `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt(), any()))
+            whenever(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt(), any()))
                     .thenReturn(Single.just(getFakeMarvelCharacters()))
             val testObserver = TestObserver<List<CharacterMarvel>>()
             repository.fetchCharacters()
@@ -62,7 +62,7 @@ object MainRepositorySpec: Spek({
 
         on("fetching from repository gives error") {
             val error = mock(Throwable::class)
-            `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt(), any()))
+            whenever(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt(), any()))
                     .thenReturn(Single.error(error))
             val testObserver = TestObserver<List<CharacterMarvel>>()
             repository.fetchCharacters()

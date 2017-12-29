@@ -27,7 +27,7 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger"
     kapt "com.google.dagger:dagger-android-processor:$dagger"
 
-    testCompile ("org.amshove.kluent:kluent:$kluent")
+    testCompile "org.amshove.kluent:kluent:$kluent"
     testImplementation "org.jetbrains.spek:spek-api:$spek"
     testImplementation "org.jetbrains.spek:spek-junit-platform-engine:$spek"
     testCompile "com.nhaarman:mockito-kotlin-kt1.1:$mockitoKotlin"
