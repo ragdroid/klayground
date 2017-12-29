@@ -9,6 +9,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,6 +21,7 @@ allprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
+        maven { url "http://dl.bintray.com/jetbrains/spek" }
     }
     ext {
         retrofitVersion = '2.3.0'
@@ -28,7 +30,6 @@ allprojects {
         constraint_layout = '1.1.0-beta3'
         arch_comp       = '1.0.0'
         arch_comp_paging= '1.0.0-alpha3'
-        kotlin          = '1.2.0'
         espresso        = '3.0.1'
         dagger          = '2.12'
         ktlint          = '0.10.0'
@@ -42,6 +43,12 @@ allprojects {
         databinding     = '3.0.0'
         reclaim         = '1.1.1'
         rxBindings      = '2.0.0'
+
+        // test libraries
+        kluent = '1.4'
+        spek = '1.1.5'
+        mockitoKotlin = '1.5.0'
+        mockito = '2.8.9'
     }
 }
 

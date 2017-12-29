@@ -39,7 +39,8 @@ This project uses
  - Data Binding
  - RxBinding
  - Leak Canary
- - Architecture Components (Future)
+ - Architecture Components? Nullable :P
+ - Spek Framework for testing
 
 ### Krazzy Kool Kotlin Kid
 
@@ -48,8 +49,8 @@ Coming Soon!!
 ### To-do
  - More Features
  - Architecture Components?
- - Testing
- - Documentation
+ - Improve Testing
+ - Improve Documentation
 
 ### Contributing
 
