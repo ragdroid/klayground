@@ -12,7 +12,6 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import org.jetbrains.spek.api.dsl.xit
 import org.mockito.Mockito.*
 
 /**
@@ -42,7 +41,7 @@ object MainRepositorySpec: Spek({
         }
 
         on("fetching from repository") {
-            `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt(), any()))
+            `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt()))
                     .thenReturn(Single.just(getFakeMarvelCharacters()))
             val testObserver = TestObserver<List<CharacterMarvel>>()
             repository.fetchCharacters()
@@ -62,7 +61,7 @@ object MainRepositorySpec: Spek({
 
         on("fetching from repository gives error") {
             val error = mock(Throwable::class)
-            `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt(), any()))
+            `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt()))
                     .thenReturn(Single.error(error))
             val testObserver = TestObserver<List<CharacterMarvel>>()
             repository.fetchCharacters()
@@ -73,7 +72,7 @@ object MainRepositorySpec: Spek({
             it("should emit no values") {
                 testObserver.assertValueCount(0)
             }
-            xit("should complete") {
+            it("should complete") {
                 //TODO It doesn't show proper error message, ignored, check later
                 testObserver.assertComplete()
             }

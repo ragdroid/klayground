@@ -27,8 +27,7 @@ interface MarvelApi {
                       @Query(HASH) md5Digest: String,
                       @Query(TIMESTAMP) timestamp: Long,
                       @Query(OFFSET) offset: Int?,
-                      @Query(LIMIT) limit: Int?,
-                      @Query(NAME_STARTS_WITH) query: String?): Single<TDataWrapper<List<TCharacterMarvel>>>
+                      @Query(LIMIT) limit: Int?): Single<TDataWrapper<List<TCharacterMarvel>>>
 
     @GET("characters/{characterId}")
     fun getCharacter(@Path(CHARACTER_ID) characterId: Long,

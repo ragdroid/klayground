@@ -10,8 +10,11 @@ dependencies {
     compile "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
     implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
     compile "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+    compile project(':mocks')
 
-
+    compile("com.squareup.okhttp3:mockwebserver:3.9.1") {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
 
     compile "com.google.dagger:dagger:$dagger"

@@ -17,6 +17,7 @@ android {
         buildConfigField("String", "PUBLIC_KEY", "\"${marvelPublicKey}\"")
         buildConfigField("String", "PRIVATE_KEY", "\"${marvelPrivateKey}\"")
         buildConfigField("String", "BASE_URL", "\"http://gateway.marvel.com/v1/public/\"")
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -56,7 +57,7 @@ dependencies {
     implementation "com.android.support:design:$support_library"
 
     implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
-    compile "com.github.bumptech.glide:glide:$glideVersion"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
 
     implementation "com.google.dagger:dagger:$dagger"

@@ -1,6 +1,5 @@
 package com.ragdroid.mvi.dagger
 
-import android.app.Application
 import com.ragdroid.api.dagger.ApiModule
 import com.ragdroid.data.DataModule
 import com.ragdroid.mvi.MarvelApplication
@@ -15,7 +14,7 @@ import javax.inject.Singleton
  */
 @Singleton
 @Component(modules = [AppModule::class, DataModule::class,
-                        ApiModule::class, ActivityBindingModule::class,
+                        LocalModule::class, ActivityBindingModule::class,
                         AndroidSupportInjectionModule::class])
 interface AppComponent: AndroidInjector<MarvelApplication> {
 

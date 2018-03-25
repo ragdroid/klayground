@@ -31,7 +31,7 @@ allprojects {
         arch_comp       = '1.0.0'
         arch_comp_paging= '1.0.0-alpha3'
         espresso        = '3.0.1'
-        dagger          = '2.12'
+        dagger          = '2.13'
         ktlint          = '0.10.0'
         leakcanary      = '1.5.4'
         rx              = '2.1.6'

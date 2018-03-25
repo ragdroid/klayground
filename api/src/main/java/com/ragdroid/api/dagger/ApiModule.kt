@@ -46,13 +46,19 @@ open class ApiModule {
     fun provideRetrofit(client: OkHttpClient,
                         moshi: Moshi,
                         config: ApiConfig): Retrofit {
+        val apiUrl = (if (mockApiUrl() == null) config.baseUrl else {
+            mockApiUrl()
+        }) as String
+
         return Retrofit.Builder()
-                .baseUrl(config.baseUrl)
+                .baseUrl(apiUrl)
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
     }
+
+    open fun mockApiUrl(): String? = null
 
     @Provides
     @Singleton

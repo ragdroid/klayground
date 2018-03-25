@@ -1,7 +1,6 @@
 package com.ragdroid.data
 
 import com.ragdroid.api.MarvelApi
-import com.ragdroid.api.dagger.ApiConfig
 import com.ragdroid.api.entity.TCharacterMarvel
 import com.ragdroid.api.entity.TDataWrapper
 import com.ragdroid.data.base.Helpers
@@ -44,8 +43,7 @@ class MainRepositoryImpl
                         + config.publicKey),
                 timeStamp,
                 0,
-                10,
-                ""
+                10
         )
     }
 
