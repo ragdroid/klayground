@@ -7,6 +7,8 @@ import com.ragdroid.data.base.SchedulerProvider
 import com.ragdroid.data.entity.AppConfig
 import com.ragdroid.mvi.BuildConfig
 import com.ragdroid.mvi.MarvelApplication
+import com.ragdroid.mvi.base.AppResourceProvider
+import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.helpers.AndroidHelpers
 import com.ragdroid.mvi.helpers.SchedulersProviderImpl
 import dagger.Module
@@ -35,5 +37,9 @@ class AppModule {
 
     @Provides
     fun provideSchedulers(providerImpl: SchedulersProviderImpl): SchedulerProvider = providerImpl
+
+    @Provides
+    fun provideResourceProvider(application: MarvelApplication): ResourceProvider =
+            AppResourceProvider(application.applicationContext)
 
 }
