@@ -11,7 +11,8 @@ data class MainViewState(
         val characters: List<CharacterMarvel>,
         val loadingError: Throwable?,
         val pullToRefreshing: Boolean,
-        val pullToRefreshError: Throwable?){
+        val pullToRefreshError: Throwable?,
+        val emptyStateVisible: Boolean){
 
     companion object Factory {
         fun init() = MainViewState(
@@ -19,7 +20,8 @@ data class MainViewState(
                 characters = emptyList(),
                 loadingError = null,
                 pullToRefreshing = false,
-                pullToRefreshError = null
+                pullToRefreshError = null,
+                emptyStateVisible = false
         )
     }
 }
@@ -27,9 +29,11 @@ data class MainViewState(
 
 sealed class MainResult {
     object Loading: MainResult()
+    object LoadingEmpty: MainResult()
     data class LoadingError(val throwable: Throwable): MainResult()
     data class LoadingComplete(val characters: List<CharacterMarvel>): MainResult()
     object PullToRefreshing: MainResult()
+    object PullToRefreshEmpty: MainResult()
     data class PullToRefreshError(val throwable: Throwable): MainResult()
     data class PullToRefreshComplete(val characters: List<CharacterMarvel>): MainResult()
 }

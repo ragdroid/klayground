@@ -26,26 +26,15 @@ class MainFragmentPresenterImpl
 
     override fun attachView(view: MainFragmentView) {
         this.view = view
-        val loadingPartialResult = view.loadingIntent()
-                .observeOn(schedulerProvider.io())
-                .flatMap { ignored -> repository.fetchCharacters().toObservable() }
-                .map { items -> MainResult.LoadingComplete(items) as MainResult }
-                .startWith (MainResult.Loading)
-                .onErrorReturn { error -> MainResult.LoadingError(error) }
+        val loadingPartialResult = subscribeToLoading(view)
 
-        val pullToRefreshPartialResult = view.pullToRefreshIntent()
-                .observeOn(schedulerProvider.io())
-                .flatMap { ignored -> repository.fetchCharacters().toObservable() }
-                .map { items -> MainResult.PullToRefreshComplete(items) as MainResult }
-                .startWith(MainResult.PullToRefreshing)
-                .onErrorReturn { error -> MainResult.PullToRefreshError(error) }
+        val pullToRefreshPartialResult = subscribeToPullToRefresh(view)
 
         val allIntentObservable = Observable.merge(loadingPartialResult, pullToRefreshPartialResult)
         val initialState = MainViewState.init()
 
-        allIntentObservable.subscribe(subject)
 
-        disposable = subject
+        disposable = allIntentObservable
                 .scan(initialState) { state, result -> reducer(state, result)}
                 .observeOn(schedulerProvider.ui())
                 .subscribe (
@@ -55,6 +44,33 @@ class MainFragmentPresenterImpl
                         {e -> Timber.e(e)})
 
 
+    }
+
+    private fun subscribeToPullToRefresh(view: MainFragmentView): Observable<MainResult>? {
+        val pullToRefreshPartialResult = view.pullToRefreshIntent()
+                .flatMap {
+                    ignored -> repository.fetchCharacters().toObservable()
+                        .subscribeOn(schedulerProvider.io())
+                        .map { items -> MainResult.PullToRefreshComplete(items) as MainResult }
+                        .startWith(MainResult.PullToRefreshing)
+                }
+                .onErrorReturn { error -> MainResult.PullToRefreshError(error) }
+        return pullToRefreshPartialResult
+    }
+
+    private fun subscribeToLoading(view: MainFragmentView): Observable<MainResult>? {
+        val loadingPartialResult = view.loadingIntent()
+                .flatMap { ignored -> repository.fetchCharacters().toObservable()
+                        .subscribeOn(schedulerProvider.io())
+                        .map { items ->
+                            if (items.size == 0)
+                                MainResult.LoadingEmpty
+                            else
+                                MainResult.LoadingComplete(items)
+                        }
+                }
+                .onErrorReturn { error -> MainResult.LoadingError(error) }
+        return loadingPartialResult
     }
 
 
@@ -70,6 +86,11 @@ class MainFragmentPresenterImpl
                         loading = false,
                         loadingError = null,
                         characters = result.characters)
+                is MainResult.LoadingEmpty -> previousState.copy(
+                        loading = false,
+                        loadingError = null,
+                        characters = emptyList(),
+                        emptyStateVisible = true)
                 is MainResult.PullToRefreshing -> previousState.copy(
                         loading = false,
                         pullToRefreshing = true,
@@ -81,6 +102,12 @@ class MainFragmentPresenterImpl
                         pullToRefreshing = false,
                         pullToRefreshError = null,
                         characters = result.characters)
+                is MainResult.PullToRefreshEmpty -> previousState.copy(
+                        pullToRefreshing = false,
+                        loadingError = null,
+                        characters = emptyList(),
+                        emptyStateVisible = true
+                )
             }
 
     override fun detachView() {

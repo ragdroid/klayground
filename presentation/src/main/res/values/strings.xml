@@ -2,4 +2,5 @@
     <string name="app_name">MVI</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="no_characters">No Characters Found</string>
 </resources>

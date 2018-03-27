@@ -10,6 +10,7 @@ import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
+import com.ragdroid.mvi.helpers.showToast
 import com.ragdroid.mvi.items.CharacterItem
 import com.ragdroid.mvi.models.CharacterModel
 import dagger.android.support.DaggerFragment
@@ -61,10 +62,14 @@ class MainFragment : DaggerFragment(), MainFragmentView {
     override fun render(state: MainViewState) {
         binding.model = state
         when {
+
             state.pullToRefreshError != null -> return@render
+
+            state.emptyStateVisible -> return@render
 
             state.loadingError != null -> {
                 adapter.clearAllRecyclerItems()
+                showToast(state.loadingError.message ?: "Loading Failed")
                 return@render
             }
 

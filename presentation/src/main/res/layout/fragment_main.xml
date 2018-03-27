@@ -9,24 +9,33 @@
             type="com.ragdroid.mvi.main.MainViewState"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.ragdroid.mvi.main.MainFragment"
-        tools:showIn="@layout/activity_main">
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/refreshLayout"
+        bind:refreshing="@{model.pullToRefreshing}">
+        <FrameLayout
+            android:background="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{!model.loading}"
-            bind:layout_constraintBottom_toBottomOf="parent"
-            bind:layout_constraintEnd_toEndOf="parent"
-            bind:layout_constraintStart_toStartOf="parent"
-            bind:layout_constraintTop_toTopOf="parent"
-            bind:refreshing="@{model.pullToRefreshing}">
+            tools:context="com.ragdroid.mvi.main.MainFragment"
+            tools:showIn="@layout/activity_main">
+
+
+            <TextView
+                android:layout_gravity="center"
+                android:visibility="@{model.emptyStateVisible, default=visible}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_large"
+                android:textStyle="bold"
+                android:text="@string/no_characters"/>
+
 
             <android.support.v7.widget.RecyclerView
+                android:layout_gravity="center"
                 android:paddingBottom="@dimen/space"
                 android:paddingEnd="@dimen/space"
                 android:paddingStart="@dimen/space"
@@ -35,24 +44,24 @@
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
 
-        <ProgressBar
-            android:id="@+id/loader"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/space"
-            android:layout_marginEnd="@dimen/space"
-            android:layout_marginStart="@dimen/space"
-            android:layout_marginTop="@dimen/space"
-            android:indeterminate="true"
-            android:visibility="@{model.loading}"
-            bind:layout_constraintBottom_toBottomOf="parent"
-            bind:layout_constraintEnd_toEndOf="parent"
-            bind:layout_constraintStart_toStartOf="parent"
-            bind:layout_constraintTop_toTopOf="parent"/>
+            <ProgressBar
+                android:id="@+id/loader"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:indeterminate="true"
+                android:visibility="@{model.loading, default=visible}"/>
+        </FrameLayout>
 
-    </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+
 </layout>

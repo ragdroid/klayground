@@ -8,6 +8,7 @@ import android.widget.ImageView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.jakewharton.rxbinding2.support.v4.widget.RxSwipeRefreshLayout
+import com.jakewharton.rxbinding2.view.enabled
 import javax.inject.Inject
 import javax.inject.Singleton
 
