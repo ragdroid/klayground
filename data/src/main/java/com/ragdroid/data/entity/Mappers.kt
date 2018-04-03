@@ -13,11 +13,11 @@ interface Mapper<in I, out O> {
 }
 
 class CharacterMapper
-    @Inject constructor(): Mapper<TCharacterMarvel, CharacterMarvel> {
+    @Inject constructor(): Mapper<TCharacterMarvel, Item> {
 
-    override fun map(input: TCharacterMarvel): CharacterMarvel {
+    override fun map(input: TCharacterMarvel): Item {
         val character = input.let {
-            CharacterMarvel(it.id,
+            Item(it.id,
                     it.name,
                     it.description,
                     "${it.thumbnail.path}.${it.thumbnail.extension}")

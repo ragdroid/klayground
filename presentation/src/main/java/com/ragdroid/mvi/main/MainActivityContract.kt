@@ -1,10 +1,10 @@
 package com.ragdroid.mvi.main
 
-import com.ragdroid.mvi.base.Presenter
-import com.ragdroid.mvi.base.View
+import com.ragdroid.mvi.base.BasePresenter
+import com.ragdroid.mvi.base.BaseView
 
 /**
  * Created by garimajain on 19/11/17.
  */
-interface MainView : View
-interface MainPresenter : Presenter<MainView>
+interface MainView : BaseView
+interface MainPresenter : BasePresenter<MainView>

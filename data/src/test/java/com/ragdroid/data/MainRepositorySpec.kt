@@ -4,7 +4,7 @@ import com.ragdroid.api.MarvelApi
 import com.ragdroid.data.base.Helpers
 import com.ragdroid.data.entity.AppConfig
 import com.ragdroid.data.entity.CharacterMapper
-import com.ragdroid.data.entity.CharacterMarvel
+import com.ragdroid.data.entity.Item
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import org.amshove.kluent.mock
@@ -43,8 +43,8 @@ object MainRepositorySpec: Spek({
         on("fetching from repository") {
             `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt()))
                     .thenReturn(Single.just(getFakeMarvelCharacters()))
-            val testObserver = TestObserver<List<CharacterMarvel>>()
-            repository.fetchCharacters()
+            val testObserver = TestObserver<List<Item>>()
+            repository.loadItems()
                     .subscribe(testObserver)
 
             it("should receive 1 value") {
@@ -63,8 +63,8 @@ object MainRepositorySpec: Spek({
             val error = mock(Throwable::class)
             `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt()))
                     .thenReturn(Single.error(error))
-            val testObserver = TestObserver<List<CharacterMarvel>>()
-            repository.fetchCharacters()
+            val testObserver = TestObserver<List<Item>>()
+            repository.loadItems()
                     .subscribe(testObserver)
             it("should error") {
                 testObserver.assertError(error)

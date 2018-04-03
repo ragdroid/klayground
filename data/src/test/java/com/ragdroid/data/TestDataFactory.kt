@@ -1,7 +1,7 @@
 package com.ragdroid.data
 
 import com.ragdroid.api.entity.*
-import com.ragdroid.data.entity.CharacterMarvel
+import com.ragdroid.data.entity.Item
 
 /**
  * Created by garimajain on 09/12/17.
@@ -40,7 +40,7 @@ fun getFakeCharacterComicWrapper() = TCharacterComicWrapper(
         emptyList()
 )
 
-fun getFakeMarvelCharacterData() = CharacterMarvel(
+fun getFakeMarvelCharacterData() = Item(
         1234,
         "name",
         "description",

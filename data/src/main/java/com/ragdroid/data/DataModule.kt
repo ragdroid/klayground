@@ -15,6 +15,6 @@ class DataModule {
     fun provideApiConfig(appConfig: AppConfig): ApiConfig = ApiConfig(appConfig.baseUrl)
 
     @Provides
-    fun provideMainRepository(repository: MainRepositoryImpl): MainRepository = repository
+    fun provideMainRepository(repository: MainRepositoryImpl): Repository = repository
 
 }

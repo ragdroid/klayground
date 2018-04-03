@@ -7,7 +7,7 @@ import com.ragdroid.data.base.Helpers
 import com.ragdroid.data.base.SchedulerProvider
 import com.ragdroid.data.entity.AppConfig
 import com.ragdroid.data.entity.CharacterMapper
-import com.ragdroid.data.entity.CharacterMarvel
+import com.ragdroid.data.entity.Item
 import io.reactivex.Single
 import java.util.concurrent.*
 import javax.inject.Inject
@@ -22,15 +22,15 @@ class MainRepositoryImpl
             private val characterMapper: CharacterMapper,
             private val config: AppConfig,
             private val helpers: Helpers,
-            private val schedulerProvider: SchedulerProvider): MainRepository {
+            private val schedulerProvider: SchedulerProvider): Repository {
 
 
-    override fun fetchCharacters(): Single<List<CharacterMarvel>> {
+    override fun loadItems(): Single<List<Item>> {
         val timeStamp = System.currentTimeMillis()
         return charactersApiSingle(timeStamp)
                 .delay(5000, TimeUnit.MILLISECONDS, schedulerProvider.computation())
                 .map { dataWrapper: TDataWrapper<List<TCharacterMarvel>> ->
-                    val characters = ArrayList<CharacterMarvel>()
+                    val characters = ArrayList<Item>()
                     dataWrapper.data.results
                             .forEach({
                                 val characterMarvel = characterMapper.map(it)
@@ -53,7 +53,7 @@ class MainRepositoryImpl
 
 }
 
-interface MainRepository {
+interface Repository {
 
-    fun fetchCharacters(): Single<List<CharacterMarvel>>
+    fun loadItems(): Single<List<Item>>
 }

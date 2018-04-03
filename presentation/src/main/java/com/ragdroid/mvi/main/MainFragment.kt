@@ -20,9 +20,9 @@ import javax.inject.Inject
 /**
  * A placeholder fragment containing a simple view.
  */
-class MainFragment : DaggerFragment(), MainFragmentView {
+class MainFragment : DaggerFragment(), com.ragdroid.mvi.main.View {
 
-    lateinit @Inject var presenter: MainFragmentPresenter
+    lateinit @Inject var presenter: Presenter
     //delegate the binding initialization to BindFragment delegate
     private val binding: FragmentMainBinding by BindFragment(R.layout.fragment_main)
     private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -59,26 +59,20 @@ class MainFragment : DaggerFragment(), MainFragmentView {
 
     override fun loadingIntent(): Observable<Boolean> = Observable.just(true)
 
-    override fun render(state: MainViewState) {
+    override fun render(state: State) {
         binding.model = state
-        when {
-
-            state.pullToRefreshError != null -> return@render
-
-            state.emptyStateVisible -> return@render
-
-            state.loadingError != null -> {
-                adapter.clearAllRecyclerItems()
-                showToast(state.loadingError.message ?: "Loading Failed")
-                return@render
-            }
-
-            else -> {
-                adapter.clearAllRecyclerItems()
-                val characterModelList =
-                        state.characters.map { CharacterItem(CharacterModel(it.name, it.imageUrl)) }
-                adapter.addItemsList(characterModelList)
-            }
+        if (state.pullToRefreshError != null) return@render
+        else if (state.emptyStateVisible) return@render
+        else if (state.loadingError != null) {
+            adapter.clearAllRecyclerItems()
+            showToast(state.loadingError.message ?: "Loading Failed")
+            return@render
+        }
+        else {
+            adapter.clearAllRecyclerItems()
+            val characterModelList =
+                    state.items.map { CharacterItem(CharacterModel(it.name, it.imageUrl)) }
+            adapter.addItemsList(characterModelList)
         }
     }
 
