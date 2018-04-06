@@ -41,8 +41,8 @@ allprojects {
         timberVersion   = '4.6.0'
         glideVersion    = '4.3.1'
         databinding     = '3.0.0'
-        reclaim         = '1.1.1'
-        rxBindings      = '2.0.0'
+        reclaim         = '1.2.2'
+        rxBindings      = '2.1.1'
 
         // test libraries
         kluent = '1.4'

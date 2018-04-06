@@ -6,15 +6,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.fueled.reclaim.ItemHandlerProvider
+import com.fueled.reclaim.ItemPresenterProvider
 import com.fueled.reclaim.ItemsViewAdapter
 import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
 import com.ragdroid.mvi.items.CharacterItem
-import com.ragdroid.mvi.models.CharacterItemState
-import com.ragdroid.mvi.models.CharacterItemHandler
+import com.ragdroid.mvi.models.CharacterItemPresenter
 import dagger.android.support.DaggerFragment
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -23,18 +22,7 @@ import javax.inject.Inject
 /**
  * A placeholder fragment containing a simple view.
  */
-class MainFragment : DaggerFragment(), MainFragmentView, ItemHandlerProvider<CharacterItemHandler>, CharacterItemHandler {
-
-    override fun onCharacterDescriptionClicked(itemId: Long) {
-        descriptionClickSubject.onNext(MainAction.LoadDescription(itemId))
-    }
-
-    override fun getItemHandler(): CharacterItemHandler {
-        return this
-    }
-
-    val descriptionClickSubject: PublishSubject<MainAction> = PublishSubject.create()
-
+class MainFragment : DaggerFragment(), MainFragmentView, ItemPresenterProvider<CharacterItemPresenter>, CharacterItemPresenter {
 
     lateinit @Inject var presenter: MainFragmentPresenter
     //delegate the binding initialization to BindFragment delegate
@@ -42,6 +30,8 @@ class MainFragment : DaggerFragment(), MainFragmentView, ItemHandlerProvider<Cha
     private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ItemsViewAdapter(context)
     }
+    val descriptionClickSubject: PublishSubject<MainAction.LoadDescription> = PublishSubject.create()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? = binding.root
@@ -69,12 +59,22 @@ class MainFragment : DaggerFragment(), MainFragmentView, ItemHandlerProvider<Cha
         super.onStop()
     }
 
-    override fun pullToRefreshIntent(): Observable<MainAction>  =
+
+    override fun onCharacterDescriptionClicked(itemId: Long) {
+        descriptionClickSubject.onNext(MainAction.LoadDescription(itemId))
+    }
+
+    override fun getItemPresenter(): CharacterItemPresenter {
+        return this
+    }
+
+
+    override fun pullToRefreshIntent(): Observable<MainAction.PullToRefresh>  =
             binding.refreshLayout.refreshes().map { action -> MainAction.PullToRefresh }
 
-    override fun loadingIntent(): Observable<MainAction> = Observable.just(MainAction.LoadData)
+    override fun loadingIntent(): Observable<MainAction.LoadData> = Observable.just(MainAction.LoadData)
 
-    override fun loadDescription(): Observable<MainAction> {
+    override fun loadDescription(): Observable<MainAction.LoadDescription> {
         return descriptionClickSubject
     }
 
@@ -89,12 +89,11 @@ class MainFragment : DaggerFragment(), MainFragmentView, ItemHandlerProvider<Cha
             }
 
             else -> {
-                adapter.clearAllRecyclerItems()
                 val characterModelList =
                         state.characters.map {
-                            CharacterItem(, this)
+                            CharacterItem(it, this)
                         }
-                adapter.addItemsList(characterModelList)
+                adapter.replaceItems(characterModelList, true)
             }
         }
     }

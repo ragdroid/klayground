@@ -12,8 +12,8 @@ import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvi.models.CharacterItemState
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
+import java.util.concurrent.*
 import javax.inject.Inject
 
 /**
@@ -24,33 +24,47 @@ class MainFragmentPresenterImpl
                     private val schedulerProvider: SchedulerProvider,
                     private val resources: ResourceProvider) : MainFragmentPresenter {
 
-    val subject: PublishSubject<MainResult> = PublishSubject.create()
     var disposable: Disposable? = null
 
     var view: MainFragmentView? = null
 
     override fun attachView(view: MainFragmentView) {
         this.view = view
-        val loadingPartialResult = view.loadingIntent()
+
+        val loadingResult = view.loadingIntent()
                 .observeOn(schedulerProvider.io())
                 .flatMap { ignored -> repository.fetchCharacters().toObservable() }
                 .map { states -> MainResult.LoadingComplete(states) as MainResult }
                 .startWith (MainResult.Loading)
                 .onErrorReturn { error -> MainResult.LoadingError(error) }
 
-        val pullToRefreshPartialResult = view.pullToRefreshIntent()
+        val pullToRefreshResult = view.pullToRefreshIntent()
                 .observeOn(schedulerProvider.io())
-                .flatMap { ignored -> repository.fetchCharacters().toObservable() }
-                .map { items -> MainResult.PullToRefreshComplete(items) as MainResult }
-                .startWith(MainResult.PullToRefreshing)
-                .onErrorReturn { error -> MainResult.PullToRefreshError(error) }
+                .flatMap { ignored ->
+                    repository.fetchCharacters().toObservable()
+                            .map { items -> MainResult.PullToRefreshComplete(items) as MainResult }
+                            .startWith(MainResult.PullToRefreshing)
+                            .onErrorReturn { error -> MainResult.PullToRefreshError(error) }
+                }
 
-        val allIntentObservable = Observable.merge(loadingPartialResult, pullToRefreshPartialResult)
+        val descriptionResult = view.loadDescription()
+                .observeOn(schedulerProvider.io())
+                .flatMap { action ->
+                    repository.fetchCharacter(action.characterId).toObservable()
+                            .delay(2000, TimeUnit.MILLISECONDS, schedulerProvider.computation())
+                            .map { item ->
+                                MainResult.DescriptionResult.DescriptionLoadComplete(item.id, item.description) as MainResult }
+                            .startWith(MainResult.DescriptionResult.DescriptionLoading(action.characterId))
+                            .onErrorReturn { error ->
+                                Timber.e(error)
+                                MainResult.DescriptionResult.DescriptionError(action.characterId, error) }
+                }
+
+        val allIntentObservable = Observable.merge(loadingResult, pullToRefreshResult, descriptionResult)
         val initialState = MainViewState.init()
 
-        allIntentObservable.subscribe(subject)
 
-        disposable = subject
+        disposable = allIntentObservable
                 .scan(initialState) { state, result -> reducer(state, result)}
                 .observeOn(schedulerProvider.ui())
                 .subscribe (
@@ -66,47 +80,66 @@ class MainFragmentPresenterImpl
             CharacterItemState.init(result.id, result.name, result.imageUrl, resources.getString(R.string.description))
 
 
-    private fun reducer(previousState: MainViewState, result: MainResult): MainViewState =
-            when (result) {
-                is MainResult.Loading -> previousState.copy(
-                        loading = true,
-                        loadingError = null)
-                is MainResult.LoadingError -> previousState.copy(
+    private fun reducer(previousState: MainViewState, result: MainResult): MainViewState {
+        val characters = previousState.characters
+        return when (result) {
+            is MainResult.Loading -> previousState.copy(
+                    loading = true,
+                    loadingError = null)
+            is MainResult.LoadingError -> previousState.copy(
+                    loading = false,
+                    loadingError = result.throwable)
+
+            is MainResult.LoadingComplete -> {
+                val characterStates = reducer(characters, result.characters)
+                previousState.copy(
                         loading = false,
-                        loadingError = result.throwable)
-                is MainResult.LoadingComplete -> {
-                    val characterStates = reducer(previousState.characters, result.characters)
-                    previousState.copy(
-                            loading = false,
-                            loadingError = null,
-                            characters = characterStates)
-                }
-
-                is MainResult.PullToRefreshing -> previousState.copy(
-                        loading = false,
-                        pullToRefreshing = true,
-                        pullToRefreshError = null)
-                is MainResult.PullToRefreshError -> previousState.copy(
-                        pullToRefreshing = false,
-                        pullToRefreshError = result.throwable)
-                is MainResult.PullToRefreshComplete -> previousState.copy(
-                        pullToRefreshing = false,
-                        pullToRefreshError = null,
-                        characters = reducer(previousState.characters, result.characters))
-
-                is MainResult.DescriptionResult ->
-                    previousState.copy(
-                            characters =
-                    )
-                    reducer(previousState.findItemWithId(result.characterId), result)
-
+                        loadingError = null,
+                        characters = characterStates)
             }
 
-    private fun reducer(previousState: CharacterItemState?, result: MainResult.DescriptionResult): CharacterItemState {
-        when(result) {
-            is MainResult.DescriptionResult.DescriptionLoading ->
-            is MainResult.DescriptionResult.DescriptionError -> TODO()
-            is MainResult.DescriptionResult.DescriptionLoadComplete -> TODO()
+            is MainResult.PullToRefreshing -> previousState.copy(
+                    loading = false,
+                    pullToRefreshing = true,
+                    pullToRefreshError = null)
+            is MainResult.PullToRefreshError -> previousState.copy(
+                    pullToRefreshing = false,
+                    pullToRefreshError = result.throwable)
+            is MainResult.PullToRefreshComplete -> previousState.copy(
+                    pullToRefreshing = false,
+                    pullToRefreshError = null,
+                    characters = reducer(characters, result.characters))
+
+            is MainResult.DescriptionResult -> {
+                val previousItemState = previousState.findItemWithId(result.characterId)
+                val previousItemStateIndex = characters.indexOf(previousItemState)
+                val newItemState = reducer(previousItemState, result)
+                val newCharactersList = characters.slice(0 until previousItemStateIndex)
+                        .plus(listOf(newItemState))
+                        .plus(characters.slice(previousItemStateIndex + 1 until characters.size))
+                previousState.copy(characters = newCharactersList)
+            }
+
+        }
+    }
+
+    private fun reducer(previousState: CharacterItemState, result: MainResult.DescriptionResult): CharacterItemState {
+        return when(result) {
+            is MainResult.DescriptionResult.DescriptionLoading -> previousState.copy(
+                    descriptionLabel = resources.getString(R.string.description_loading),
+                    description = "",
+                    descriptionLoading = true
+            )
+            is MainResult.DescriptionResult.DescriptionError -> previousState.copy(
+                    descriptionLoading = false,
+                    description = "",
+                    descriptionLabel = resources.getString(R.string.description)
+            )
+            is MainResult.DescriptionResult.DescriptionLoadComplete -> previousState.copy(
+                    descriptionLabel = resources.getString(R.string.description_loaded),
+                    descriptionLoading = false,
+                    description = result.description
+            )
         }
     }
 
@@ -125,6 +158,6 @@ class MainFragmentPresenterImpl
 
 }
 
-private fun MainViewState.findItemWithId(characterId: Long): CharacterItemState? =
-        characters.find { it.characterId == characterId }
+private fun MainViewState.findItemWithId(characterId: Long): CharacterItemState =
+        characters.find { it.characterId == characterId }!!
 

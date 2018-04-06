@@ -12,7 +12,7 @@
 
         <variable
             name="handler"
-            type="com.ragdroid.mvi.models.CharacterItemHandler"/>
+            type="com.ragdroid.mvi.models.CharacterItemPresenter"/>
 
     </data>
 
@@ -52,7 +52,7 @@
             android:maxHeight="200dp"
             android:minHeight="20dp"
             android:padding="@dimen/space"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="68dp"
             android:gravity="right"
             android:textStyle="bold"
             android:onClick="@{() -> handler.onCharacterDescriptionClicked(state.characterId)}"
@@ -60,15 +60,15 @@
             android:textSize="@dimen/text_large"
             android:text="@{state.descriptionLabel, default=@string/description}"
             app:layout_constraintEnd_toStartOf="@id/description_loading"
-            app:layout_constraintTop_toTopOf="parent"
-            bind:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <ProgressBar
             android:layout_marginEnd="@dimen/keyline_1"
             android:id="@+id/description_loading"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="84dp"
+            android:visibility="@{state.descriptionLoading}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            bind:layout_constraintBottom_toBottomOf="parent"
             android:indeterminate="true"
             android:layout_width="12dp"
             android:layout_height="12dp"/>
@@ -78,10 +78,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxHeight="200dp"
-            android:layout_marginTop="124dp"
+            android:layout_marginTop="110dp"
             android:gravity="right"
             android:ellipsize="end"
             android:textSize="@dimen/text_medium"
+            tools:text="jsbjsbjbsbsbjsssjbsbjbjsbjsbss\n sbjssbsjbsjbbsbs\njnjsbsjsjsbksnknsknsknsk \n jbsjbsj jsjbjsbjjs\n"
             android:visibility="@{state.shouldShowDescription}"
             android:text="@{state.description}"
             app:layout_constraintEnd_toEndOf="parent"

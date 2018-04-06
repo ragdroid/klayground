@@ -12,9 +12,9 @@ interface MainFragmentView : View {
     /**
      * Expose various intents
      */
-    fun pullToRefreshIntent(): Observable<MainAction>
-    fun loadingIntent(): Observable<MainAction>
-    fun loadDescription(): Observable<MainAction>
+    fun pullToRefreshIntent(): Observable<MainAction.PullToRefresh>
+    fun loadingIntent(): Observable<MainAction.LoadData>
+    fun loadDescription(): Observable<MainAction.LoadDescription>
 
     fun render(state: MainViewState)
 
