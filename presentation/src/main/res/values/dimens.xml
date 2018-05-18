@@ -1,0 +1,40 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!--- General -->
+    <dimen name="zero_dp">0dp</dimen>
+    <dimen name="one_dp">1dp</dimen>
+    <dimen name="two_dp">2dp</dimen>
+    <dimen name="six_dp">6dp</dimen>
+    <dimen name="space_low">4dp</dimen>
+    <dimen name="space">8dp</dimen>
+    <dimen name="space_normal">10dp</dimen>
+    <dimen name="space_medium">12dp</dimen>
+    <dimen name="space_large">16dp</dimen>
+    <dimen name="space_larger">20dp</dimen>
+    <dimen name="space_xlarge">24dp</dimen>
+    <dimen name="space_xxlarge">32dp</dimen>
+
+
+    <dimen name="keyline_1">16dp</dimen>
+    <dimen name="keyline_1_minus_8dp">8dp</dimen>
+    <dimen name="keyline_2">72dp</dimen>
+    <dimen name="keyline_2_minus_8dp">64dp</dimen>
+    <dimen name="keyline_2_minus_16dp">56dp</dimen>
+    <dimen name="keyline_2_minus_32dp">40dp</dimen>
+    <dimen name="keyline_2_minus_48dp">24dp</dimen>
+
+    <dimen name="text_huge">32sp</dimen>
+    <dimen name="text_xxxlarge">28sp</dimen>
+    <dimen name="text_xxlarge">24sp</dimen>
+    <dimen name="text_xlarge">20sp</dimen>
+    <dimen name="text_large">18sp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_normal">14sp</dimen>
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_xsmall">10sp</dimen>
+    <dimen name="logo_size">100dp</dimen>
+    <dimen name="min_btn_height">48dp</dimen>
+    <dimen name="item_edge">100dp</dimen>
+
+</resources>

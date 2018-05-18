@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="state"
+            type="com.ragdroid.mvi.models.CharacterItemState"/>
+
+        <variable
+            name="handler"
+            type="com.ragdroid.mvi.models.CharacterItemPresenter"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/item_edge"
+            android:layout_height="@dimen/item_edge"
+            android:layout_marginTop="@dimen/space"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            bind:src="@{state.imageUrl}"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/item_edge"
+            android:layout_marginEnd="@dimen/space"
+            android:layout_marginStart="@dimen/space"
+            android:layout_marginTop="@dimen/space"
+            android:gravity="center_vertical"
+            android:text="@{state.name}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="200dp"
+            android:minHeight="20dp"
+            android:padding="@dimen/space"
+            android:layout_marginTop="68dp"
+            android:gravity="right"
+            android:textStyle="bold"
+            android:onClick="@{() -> handler.onCharacterDescriptionClicked(state.characterId)}"
+            android:ellipsize="end"
+            android:textSize="@dimen/text_large"
+            android:text="@{state.descriptionLabel, default=@string/description}"
+            app:layout_constraintEnd_toStartOf="@id/description_loading"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ProgressBar
+            android:layout_marginEnd="@dimen/keyline_1"
+            android:id="@+id/description_loading"
+            android:layout_marginTop="84dp"
+            android:visibility="@{state.descriptionLoading}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:indeterminate="true"
+            android:layout_width="12dp"
+            android:layout_height="12dp"/>
+
+        <TextView
+            android:id="@+id/description_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="200dp"
+            android:layout_marginTop="110dp"
+            android:gravity="right"
+            android:ellipsize="end"
+            android:textSize="@dimen/text_medium"
+            tools:text="jsbjsbjbsbsbjsssjbsbjbjsbjsbss\n sbjssbsjbsjbbsbs\njnjsbsjsjsbksnknsknsknsk \n jbsjbsj jsjbjsbjjs\n"
+            android:visibility="@{state.shouldShowDescription}"
+            android:text="@{state.description}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            bind:layout_constraintBottom_toBottomOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
+</layout>

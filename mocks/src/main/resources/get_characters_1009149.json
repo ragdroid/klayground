@@ -1,0 +1,157 @@
+{
+  "code": 200,
+  "status": "Ok",
+  "copyright": "© 2018 MARVEL",
+  "attributionText": "Data provided by Marvel. © 2018 MARVEL",
+  "attributionHTML": "<a href=\"http://marvel.com\">Data provided by Marvel. © 2018 MARVEL</a>",
+  "etag": "298021c021e1f8b8e765aa565d87152eedd685ba",
+  "data": {
+    "offset": 0,
+    "limit": 20,
+    "total": 1,
+    "count": 1,
+    "results": [
+      {
+        "id": 1009149,
+        "name": "Abyss",
+        "description": "",
+        "modified": "2014-04-29T14:10:43-0400",
+        "thumbnail": {
+          "path": "http://i.annihil.us/u/prod/marvel/i/mg/9/30/535feab462a64",
+          "extension": "jpg"
+        },
+        "resourceURI": "http://gateway.marvel.com/v1/public/characters/1009149",
+        "comics": {
+          "available": 8,
+          "collectionURI": "http://gateway.marvel.com/v1/public/characters/1009149/comics",
+          "items": [
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/13943",
+              "name": "Uncanny X-Men (1963) #402"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/13945",
+              "name": "Uncanny X-Men (1963) #404"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/13946",
+              "name": "Uncanny X-Men (1963) #405"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/13947",
+              "name": "Uncanny X-Men (1963) #406"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/13970",
+              "name": "Uncanny X-Men (1963) #429"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/13972",
+              "name": "Uncanny X-Men (1963) #431"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/12386",
+              "name": "X-Men: Alpha (1995) #1"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/comics/2539",
+              "name": "X-Men: The Complete Age of Apocalypse Epic Book 2 (Trade Paperback)"
+            }
+          ],
+          "returned": 8
+        },
+        "series": {
+          "available": 3,
+          "collectionURI": "http://gateway.marvel.com/v1/public/characters/1009149/series",
+          "items": [
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/2258",
+              "name": "Uncanny X-Men (1963 - 2011)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/2104",
+              "name": "X-Men: Alpha (1995)"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/series/1583",
+              "name": "X-Men: The Complete Age of Apocalypse Epic Book 2 (2005)"
+            }
+          ],
+          "returned": 3
+        },
+        "stories": {
+          "available": 8,
+          "collectionURI": "http://gateway.marvel.com/v1/public/characters/1009149/stories",
+          "items": [
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/26281",
+              "name": "A Beginning",
+              "type": "interiorStory"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/28352",
+              "name": "Utility of Myth",
+              "type": "interiorStory"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/28356",
+              "name": "Army Ants",
+              "type": "interiorStory"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/28358",
+              "name": "Ballroom Blitzkrieg",
+              "type": "interiorStory"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/28360",
+              "name": "Staring Contests are for Suckers",
+              "type": "interiorStory"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/28407",
+              "name": "The Draco Part One: Sins of the Father",
+              "type": "interiorStory"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/28411",
+              "name": "The Draco Part Three",
+              "type": "interiorStory"
+            },
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/stories/28413",
+              "name": "The Draco Part Four",
+              "type": "interiorStory"
+            }
+          ],
+          "returned": 8
+        },
+        "events": {
+          "available": 1,
+          "collectionURI": "http://gateway.marvel.com/v1/public/characters/1009149/events",
+          "items": [
+            {
+              "resourceURI": "http://gateway.marvel.com/v1/public/events/227",
+              "name": "Age of Apocalypse"
+            }
+          ],
+          "returned": 1
+        },
+        "urls": [
+          {
+            "type": "detail",
+            "url": "http://marvel.com/characters/85/abyss?utm_campaign=apiRef&utm_source=f1a4346d14abe608884542f49554a001"
+          },
+          {
+            "type": "wiki",
+            "url": "http://marvel.com/universe/Abyss_(alien)?utm_campaign=apiRef&utm_source=f1a4346d14abe608884542f49554a001"
+          },
+          {
+            "type": "comiclink",
+            "url": "http://marvel.com/comics/characters/1009149/abyss?utm_campaign=apiRef&utm_source=f1a4346d14abe608884542f49554a001"
+          }
+        ]
+      }
+    ]
+  }
+}
