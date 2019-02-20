@@ -18,8 +18,8 @@ class CharacterItem(val state: CharacterItemState, presenterProvider: ItemPresen
         BaseItem<CharacterItemState, CharacterItemPresenter, CharacterItem.ViewHolder>(state, presenterProvider) {
 
     override fun updateItemViews() {
-        viewHolder.binding.state = state
-        viewHolder.binding.handler = itemPresenterProvider.itemPresenter
+        viewHolder.binding?.state = state
+        viewHolder.binding?.handler = itemPresenterProvider.itemPresenter
     }
 
     override fun onCreateViewHolder(view: View): ViewHolder = ViewHolder(view)
@@ -29,7 +29,7 @@ class CharacterItem(val state: CharacterItemState, presenterProvider: ItemPresen
     override fun getLayoutId(): Int = R.layout.item_character
 
     class ViewHolder(view: View): BaseViewHolder(view) {
-        val binding: ItemCharacterBinding = DataBindingUtil.bind(view)
+        val binding: ItemCharacterBinding? = DataBindingUtil.bind(view)
     }
 
         override fun isContentsTheSame(newItem: BaseItem<*, *, *>?): Boolean {
