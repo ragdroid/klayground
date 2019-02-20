@@ -15,7 +15,7 @@ class LoaderItem(val state: CharacterItemState) :
         BaseItem<CharacterItemState, Void, LoaderItem.ViewHolder>(state, null) {
 
     override fun updateItemViews() {
-        viewHolder.binding.state = state
+        viewHolder.binding?.state = state
     }
 
     override fun onCreateViewHolder(view: View): ViewHolder = ViewHolder(view)
@@ -25,6 +25,6 @@ class LoaderItem(val state: CharacterItemState) :
     override fun getLayoutId(): Int = R.layout.item_character
 
     class ViewHolder(view: View): BaseViewHolder(view) {
-        val binding: ItemCharacterBinding = DataBindingUtil.bind(view)
+        val binding: ItemCharacterBinding? = DataBindingUtil.bind(view)
     }
 }
