@@ -1,10 +1,10 @@
 package com.ragdroid.mvi.helpers
 
 import android.app.Activity
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
 import android.view.ViewGroup
 import java.io.IOException
 import kotlin.reflect.KProperty
@@ -39,7 +39,7 @@ class BindActivity<in R: Activity, out T: ViewDataBinding>(
  *
  * use private val binding: FragmentMainBinding by BindFragment(R.layout.fragment_main) instead
  */
-class BindFragment<in R: Fragment, out T: ViewDataBinding>(
+class BindFragment<in R: androidx.fragment.app.Fragment, out T: ViewDataBinding>(
         @LayoutRes private val layoutRes: Int) {
 
     private var value: T? = null

@@ -3,6 +3,7 @@
 buildscript {
     ext.kotlin_version = '1.3.11'
     repositories {
+        mavenCentral()
         google()
         jcenter()
     }
@@ -18,22 +19,29 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenCentral()
         google()
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url "http://dl.bintray.com/jetbrains/spek" }
     }
     ext {
+        compileSdk = 28
+        minSdk = 21
         retrofitVersion = '2.3.0'
         support_library = '27.1.1'
+        material = '1.0.0'
         okhttpVersion = '3.8.0'
         constraint_layout = '2.0.0-alpha3'
+        navigationVersion = '1.0.0-beta02'
+        lifecycleEx = '2.0.0'
+        lifecycleRx = '2.0.0'
+        lifecycleCompiler = '2.0.0'
         arch_comp       = '1.1.1'
-        arch_comp_paging= '1.0.1'
-        espresso        = '3.0.1'
+        arch_comp_paging= '2.1.0'
         dagger          = '2.20'
         ktlint          = '0.10.0'
-        leakcanary      = '1.5.4'
+        leakcanary      = '1.6.2'
         rx              = '2.1.6'
         rxAndroid       = '2.1.0'
         rxlint          = '1.6'
@@ -43,12 +51,15 @@ allprojects {
         databinding     = '3.0.0'
         reclaim         = '1.2.2'
         rxBindings      = '2.1.1'
+        appCompat = '1.0.2'
 
         // test libraries
         kluent = '1.4'
         spek = '1.1.5'
         mockitoKotlin = '1.5.0'
         mockito = '2.8.9'
+        testRunner = '1.1.1'
+        espresso = '3.1.0'
     }
 }
 

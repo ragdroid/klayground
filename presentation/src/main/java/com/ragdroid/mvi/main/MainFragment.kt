@@ -1,8 +1,8 @@
 package com.ragdroid.mvi.main
 
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,9 +46,9 @@ class MainFragment : DaggerFragment(), MainFragmentView, ItemPresenterProvider<C
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val manager = LinearLayoutManager(context)
-        val decoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-        manager.orientation = LinearLayoutManager.VERTICAL
+        val manager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        val decoration = androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL)
+        manager.orientation = androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
         binding.listView.layoutManager = manager
         binding.listView.adapter = adapter
         binding.listView.addItemDecoration(decoration)

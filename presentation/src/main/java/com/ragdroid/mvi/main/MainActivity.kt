@@ -1,7 +1,7 @@
 package com.ragdroid.mvi.main
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.ActivityMainBinding
 import com.ragdroid.mvi.helpers.BindActivity

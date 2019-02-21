@@ -1,6 +1,6 @@
 package com.ragdroid.mvi.items
 
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.view.View
 import com.fueled.reclaim.BaseItem
 import com.fueled.reclaim.BaseViewHolder

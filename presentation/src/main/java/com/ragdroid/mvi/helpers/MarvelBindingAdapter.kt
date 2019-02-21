@@ -1,8 +1,8 @@
 package com.ragdroid.mvi.helpers
 
-import android.databinding.BindingConversion
+import androidx.databinding.BindingConversion
 import android.graphics.drawable.Drawable
-import android.support.v4.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.RequestManager
@@ -30,7 +30,7 @@ constructor(val requestManager: RequestManager) {
      * @param blurValue The blur radius value between 1 and 25.
      * @param cropCircle Crop the image in a circle of not.
      */
-    @android.databinding.BindingAdapter(
+    @androidx.databinding.BindingAdapter(
             value = ["src", "placeholder", "error", "blur", "cropCircle", "centerCrop"],
             requireAll = false)
     fun setImageUrl(view: ImageView, src: String, placeholder: Drawable?, error: Drawable?,
@@ -64,8 +64,8 @@ constructor(val requestManager: RequestManager) {
 
 
 
-    @android.databinding.BindingAdapter(value = ["refreshing"])
-    fun setPulltoRefreshing(swipeRefreshLayout: SwipeRefreshLayout, refreshing: Boolean) {
+    @androidx.databinding.BindingAdapter(value = ["refreshing"])
+    fun setPulltoRefreshing(swipeRefreshLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout, refreshing: Boolean) {
         swipeRefreshLayout.isRefreshing = refreshing
         swipeRefreshLayout.isEnabled = true
     }
@@ -75,7 +75,7 @@ constructor(val requestManager: RequestManager) {
 
 class MarvelBindingComponent
 @Inject constructor(val adapter: MarvelBindingAdapter):
-        android.databinding.DataBindingComponent {
+        androidx.databinding.DataBindingComponent {
 
     override fun getMarvelBindingAdapter(): MarvelBindingAdapter = adapter
 
