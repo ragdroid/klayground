@@ -1,1 +1,1 @@
-include ':presentation', ':api', ':data', ':mocks'
+include ':presentation', ':api', ':data', ':mocks', ':mvvmi'

@@ -6,11 +6,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion compileSdk
+    compileSdkVersion Versions.compileSdk
     defaultConfig {
         applicationId "com.ragdroid.mvi"
-        minSdkVersion minSdk
-        targetSdkVersion compileSdk
+        minSdkVersion Versions.minSdk
+        targetSdkVersion Versions.compileSdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -38,54 +38,54 @@ android {
 
 dependencies {
     api project(':data')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation Deps.kotlin_jdk
 
-    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
+    implementation Deps.constraintLayout
 
-    implementation "com.jakewharton.timber:timber:$timberVersion"
-    implementation "com.github.fueled:reclaim:$reclaim"
+    implementation Deps.timber
+    implementation Deps.reclaim
 
     //arch comp
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleEx"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycleRx"
-    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycleRx"
+    implementation Deps.lifecycleEx
+    implementation Deps.lifecycleRx
+    kapt Deps.lifecycleCompiler
 
-    implementation "android.arch.navigation:navigation-fragment-ktx:$navigationVersion"
-    implementation "android.arch.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
+    implementation Deps.navigationFragment
+    implementation Deps.navigationUIKtx
 
-    implementation "androidx.paging:paging-runtime:$arch_comp_paging"
+    implementation Deps.pagingRuntime
 
-    implementation "androidx.appcompat:appcompat:$appCompat"
-    implementation "com.google.android.material:material:$material"
+    implementation Deps.appCompat
+    implementation Deps.material
 
-    implementation "com.github.bumptech.glide:glide:$glideVersion"
-    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+    implementation Deps.glide
+    kapt Deps.glideCompiler
 
-    implementation "com.google.dagger:dagger:$dagger"
-    implementation "com.google.dagger:dagger-android:$dagger"
-    implementation "com.google.dagger:dagger-android-support:$dagger"
-    kapt "com.google.dagger:dagger-compiler:$dagger"
-    kapt "com.google.dagger:dagger-android-processor:$dagger"
+    implementation Deps.dagger
+    implementation Deps.daggerAndroid
+    implementation Deps.daggerAndroidSupport
+    kapt Deps.daggerCompiler
+    kapt Deps.daggerAndroidProcessor
 
-    implementation "io.reactivex.rxjava2:rxjava:$rx"
-    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
-    implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBindings"
-    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:$rxBindings"
-    implementation "com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:$rxBindings"
+    implementation Deps.rx
+    implementation Deps.rxAndroid
+    implementation Deps.rxBindingKt
+    implementation Deps.rxBindingRvKt
+    implementation Deps.rxBindingSupportV4
 
-    testImplementation "junit:junit:$junit"
+    testImplementation TestDeps.junit
 
-    androidTestImplementation("androidx.test.espresso:espresso-core:$espresso", {
+    androidTestImplementation(TestDeps.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestImplementation "androidx.test:runner:$testRunner"
+    androidTestImplementation TestDeps.testRunner
 
-    debugImplementation "nl.littlerobots.rxlint:rxlint:$rxlint"
+    debugImplementation TestDeps.rxLint
 
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary"
+    debugImplementation TestDeps.leakCanary
+    releaseImplementation TestDeps.leakCanaryNoOp
 
-    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+    implementation(TestDeps.crashlytics) {
         transitive = true
     }
 }
