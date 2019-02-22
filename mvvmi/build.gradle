@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion Versions.compileSdk
@@ -28,6 +31,18 @@ dependencies {
 
     implementation Deps.appCompat
     testImplementation TestDeps.junit
+    implementation Deps.rx
+    implementation Deps.rxAndroid
+    implementation Deps.timber
+    implementation Deps.lifecycleEx
+    implementation Deps.lifecycleRx
+    kapt Deps.lifecycleCompiler
+
     androidTestImplementation TestDeps.testRunner
     androidTestImplementation TestDeps.espressoCore
+    implementation Deps.coreKtx
+    implementation Deps.kotlin_jdk
+}
+repositories {
+    mavenCentral()
 }
