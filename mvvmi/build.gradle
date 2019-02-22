@@ -40,7 +40,6 @@ dependencies {
 
     androidTestImplementation TestDeps.testRunner
     androidTestImplementation TestDeps.espressoCore
-    implementation Deps.coreKtx
     implementation Deps.kotlin_jdk
 }
 repositories {

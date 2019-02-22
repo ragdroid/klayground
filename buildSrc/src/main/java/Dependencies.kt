@@ -40,7 +40,6 @@ object Versions {
 }
 
 object Deps {
-    val coreKtx = "androidx.core:core-ktx:0.3"
     val kotlin_jdk = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin_version}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraint_layout}"
     val timber = "com.jakewharton.timber:timber:${Versions.timberVersion}"

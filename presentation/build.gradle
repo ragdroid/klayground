@@ -37,6 +37,7 @@ android {
 
 
 dependencies {
+    api project(':mvvmi')
     api project(':data')
     implementation Deps.kotlin_jdk
 

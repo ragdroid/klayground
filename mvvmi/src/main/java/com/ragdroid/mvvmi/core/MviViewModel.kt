@@ -31,16 +31,14 @@ abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviStat
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private val actionToResultTransformer = FlowableTransformer<Action, Result> { actions ->
-        actions.flatMap {
-            actionsToResultTransformer(it)
-        }
+        actionsToResultTransformer(actions)
     }
 
     /**
      * transform a stream of actions to a stream of results
      */
     abstract fun
-            actionsToResultTransformer(action: Action): Flowable<Result>
+            actionsToResultTransformer(actions: Flowable<Action>): Flowable<Result>
 
     /**
      * Called when the scene has been created and this

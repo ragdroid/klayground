@@ -4,6 +4,9 @@ import com.ragdroid.data.entity.CharacterMarvel
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.models.CharacterItemState
+import com.ragdroid.mvvmi.core.MviAction
+import com.ragdroid.mvvmi.core.MviResult
+import com.ragdroid.mvvmi.core.MviState
 
 /**
  * State of the MainView
@@ -14,7 +17,7 @@ data class MainViewState(
         val characters: List<CharacterItemState>,
         val loadingError: Throwable?,
         val pullToRefreshing: Boolean,
-        val pullToRefreshError: Throwable?){
+        val pullToRefreshError: Throwable?): MviState() {
 
     companion object Factory {
         fun init() = MainViewState(
@@ -91,13 +94,13 @@ data class MainViewState(
 
 }
 
-sealed class MainAction {
+sealed class MainAction: MviAction() {
     object PullToRefresh: MainAction()
     object LoadData: MainAction()
     data class LoadDescription(val characterId: Long): MainAction()
 }
 
-sealed class MainResult {
+sealed class MainResult: MviResult() {
 
     object Loading: MainResult()
     data class LoadingError(val throwable: Throwable): MainResult()

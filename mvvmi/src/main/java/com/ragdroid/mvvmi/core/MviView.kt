@@ -26,7 +26,7 @@ interface MviView<Action: MviAction, State: MviState> {
     fun render(state: State)
     fun navigate(navigationState: NavigationState)
 
-    fun onViewCreated() {
+    fun onMviViewCreated() {
         subscribeToViewState()
         subscribeToNavigationState()
         viewModel.processActions(actionsSubject)

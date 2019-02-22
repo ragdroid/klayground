@@ -9,8 +9,6 @@ import com.ragdroid.mvi.helpers.BindActivity
 import com.ragdroid.mvi.viewmodel.MainViewModel
 import dagger.android.support.DaggerAppCompatActivity
 
-import javax.inject.Inject
-
 class MainActivity : DaggerAppCompatActivity(), MainView {
 
 
