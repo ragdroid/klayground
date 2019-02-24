@@ -3,6 +3,7 @@ package com.ragdroid.mvi.viewmodel
 import com.ragdroid.data.MainRepository
 import com.ragdroid.data.base.SchedulerProvider
 import com.ragdroid.mvi.base.AppResourceProvider
+import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
@@ -10,8 +11,9 @@ import com.ragdroid.mvvmi.core.MviViewModel
 import io.reactivex.Flowable
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class MainFragmentViewModel(private val resourceProvider: AppResourceProvider,
+class MainFragmentViewModel @Inject constructor(private val resourceProvider: ResourceProvider,
                             private val schedulerProvider: SchedulerProvider,
                             private val repository: MainRepository):
         MviViewModel<MainAction, MainResult, MainViewState>(MainViewState.init()) {

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,7 @@ import dagger.android.support.DaggerFragment
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.processors.PublishProcessor
+import javax.inject.Inject
 
 /**
  * A placeholder fragment containing a simple view.
@@ -34,20 +36,20 @@ class MainFragment() : DaggerFragment(),
         ItemPresenterProvider<CharacterItemPresenter>,
         CharacterItemPresenter, MviView<MainAction, MainViewState> {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     //delegate the binding initialization to BindFragment delegate
     private val binding: FragmentMainBinding by BindFragment(R.layout.fragment_main)
     private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ItemsViewAdapter(context)
     }
-    val descriptionClickSubject: PublishProcessor<MainAction.LoadDescription> = PublishProcessor.create()
+    private val descriptionClickSubject: PublishProcessor<MainAction.LoadDescription> = PublishProcessor.create()
 
     override lateinit var viewModel: MainFragmentViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProviders.of(this).get(MainFragmentViewModel::class.java)
-        viewModel.processActions(Flowable.merge(pullToRefreshIntent(), loadDescription(), loadingIntent()))
-
         return binding.root
     }
 
@@ -59,7 +61,13 @@ class MainFragment() : DaggerFragment(),
         binding.listView.layoutManager = manager
         binding.listView.adapter = adapter
         binding.listView.addItemDecoration(decoration)
+        setupViewModel()
         super.onMviViewCreated()
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
+        viewModel.processActions(Flowable.merge(pullToRefreshIntent(), loadDescription(), loadingIntent()))
     }
 
 
@@ -102,7 +110,8 @@ class MainFragment() : DaggerFragment(),
     }
 
     override val actionsSubject: PublishProcessor<MainAction> = PublishProcessor.create()
-    override val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
+    override val lifecycleOwner: LifecycleOwner
+    get() = viewLifecycleOwner
 
 
     override fun navigate(navigationState: NavigationState) {

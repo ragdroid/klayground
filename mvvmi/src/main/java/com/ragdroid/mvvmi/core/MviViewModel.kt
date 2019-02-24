@@ -12,12 +12,14 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.processors.BehaviorProcessor
 import io.reactivex.processors.PublishProcessor
 import io.reactivex.processors.UnicastProcessor
+import timber.log.Timber
 
 abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviState>(initialState: State) : ViewModel() {
 
     private val stateProcessor: BehaviorProcessor<State> = BehaviorProcessor.create()
     protected val actionsProcessor: PublishProcessor<Action> = PublishProcessor.create()
 
+    //Thanks to https://twitter.com/Hussein_Ala for the concept of UnicastProcessor
     private var navigationState: UnicastProcessor<NavigationState> = UnicastProcessor.create()
 
     protected var currentState: State = initialState
@@ -52,7 +54,10 @@ abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviStat
         actionsProcessor
                 .compose(actionToResultTransformer)
                 .scan(currentState) { state, result: Result -> reduce(state, result)}
-                .doOnNext { currentState = it }
+                .doOnNext {
+                    Timber.d(it.toString())
+                    currentState = it
+                }
                 .subscribe(stateProcessor)
 
     }
