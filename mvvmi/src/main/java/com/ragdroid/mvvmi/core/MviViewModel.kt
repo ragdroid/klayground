@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.fueled.mvp.core.mvp.NavigationState
 import io.reactivex.Flowable
 import io.reactivex.FlowableTransformer
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.processors.BehaviorProcessor
@@ -25,9 +26,10 @@ abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviStat
     protected var currentState: State = initialState
         private set
 
-    open fun stateObservable(): LiveData<State> = LiveDataReactiveStreams.fromPublisher(stateProcessor)
+    open fun stateLiveData(): LiveData<State> = LiveDataReactiveStreams.fromPublisher(stateProcessor)
+    open fun stateFlowable(): Flowable<State> = stateProcessor
 
-    open fun navigationState(): LiveData<NavigationState> = LiveDataReactiveStreams.fromPublisher(navigationState)
+    open fun navigationStateLiveData(): LiveData<NavigationState> = LiveDataReactiveStreams.fromPublisher(navigationState)
 
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -50,8 +52,7 @@ abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviStat
      */
     @CallSuper
     open fun processActions(actions: Flowable<Action>) {
-        actions.subscribe(actionsProcessor)
-        actionsProcessor
+        Flowable.merge(actions, actionsProcessor)
                 .compose(actionToResultTransformer)
                 .scan(currentState) { state, result: Result -> reduce(state, result)}
                 .doOnNext {
@@ -59,7 +60,6 @@ abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviStat
                     currentState = it
                 }
                 .subscribe(stateProcessor)
-
     }
 
     fun onAction(action: Action) {

@@ -2,30 +2,30 @@ package com.ragdroid.mvi.viewmodel
 
 import com.ragdroid.data.MainRepository
 import com.ragdroid.data.base.SchedulerProvider
-import com.ragdroid.mvi.base.AppResourceProvider
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvvmi.core.MviViewModel
 import io.reactivex.Flowable
+import io.reactivex.FlowableTransformer
+import io.reactivex.Observable
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainFragmentViewModel @Inject constructor(private val resourceProvider: ResourceProvider,
-                            private val schedulerProvider: SchedulerProvider,
-                            private val repository: MainRepository):
+                                                private val schedulerProvider: SchedulerProvider,
+                                                private val repository: MainRepository):
         MviViewModel<MainAction, MainResult, MainViewState>(MainViewState.init()) {
 
     override fun actionsToResultTransformer(actions: Flowable<MainAction>): Flowable<MainResult> =
-        actions.publish { shared ->
-            Flowable.merge(
-                    loadDescriptionResult(shared.ofType(MainAction.LoadDescription::class.java)),
-                    pullToRefreshResult(shared.ofType(MainAction.PullToRefresh::class.java)),
-                            loadingResult(shared.ofType(MainAction.LoadData::class.java)))
+            actions.publish { shared ->
+                Flowable.merge(loadingResult(shared.ofType(MainAction.LoadData::class.java)),
+                        loadDescriptionResult(shared.ofType(MainAction.LoadDescription::class.java)),
+                        pullToRefreshResult(shared.ofType(MainAction.PullToRefresh::class.java)))
 
-        }
+            }
 
     override fun reduce(previousState: MainViewState, result: MainResult): MainViewState {
         return previousState.reduce(result, resourceProvider)
@@ -63,10 +63,12 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
     private fun loadingResult(loadDataActionStream: Flowable<MainAction.LoadData>): Flowable<MainResult> {
         return loadDataActionStream
                 .observeOn(schedulerProvider.io())
-                .flatMap { ignored -> repository.fetchCharacters().toFlowable() }
-                .map { states -> MainResult.LoadingComplete(states) as MainResult }
-                .startWith(MainResult.Loading)
-                .onErrorReturn { error -> MainResult.LoadingError(error) }
+                .flatMap { ignored ->
+                    repository.fetchCharacters().toFlowable()
+                            .map { states -> MainResult.LoadingComplete(states) as MainResult }
+                            .startWith(MainResult.Loading)
+                            .onErrorReturn(MainResult::LoadingError)
+                }
     }
 
 

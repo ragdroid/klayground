@@ -18,7 +18,7 @@ dependencies {
     implementation Deps.kotlin_jdk
     compile project(':api')
 
-    implementation Deps.timber
+    compile Deps.timber
     implementation Deps.rx
 
     compile Deps.dagger

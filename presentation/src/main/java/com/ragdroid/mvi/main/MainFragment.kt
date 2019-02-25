@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -27,6 +26,7 @@ import dagger.android.support.DaggerFragment
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.processors.PublishProcessor
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -44,7 +44,7 @@ class MainFragment() : DaggerFragment(),
     private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ItemsViewAdapter(context)
     }
-    private val descriptionClickSubject: PublishProcessor<MainAction.LoadDescription> = PublishProcessor.create()
+    private val descriptionClickProcessor: PublishProcessor<MainAction.LoadDescription> = PublishProcessor.create()
 
     override lateinit var viewModel: MainFragmentViewModel
 
@@ -63,16 +63,16 @@ class MainFragment() : DaggerFragment(),
         binding.listView.addItemDecoration(decoration)
         setupViewModel()
         super.onMviViewCreated()
+        viewModel.processActions(Flowable.merge(loadingIntent(), pullToRefreshIntent(), loadDescription()))
     }
 
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
-        viewModel.processActions(Flowable.merge(pullToRefreshIntent(), loadDescription(), loadingIntent()))
     }
 
 
     override fun onCharacterDescriptionClicked(itemId: Long) {
-        descriptionClickSubject.onNext(MainAction.LoadDescription(itemId))
+        descriptionClickProcessor.onNext(MainAction.LoadDescription(itemId))
     }
 
     override fun getItemPresenter(): CharacterItemPresenter {
@@ -86,7 +86,7 @@ class MainFragment() : DaggerFragment(),
     private fun loadingIntent(): Flowable<MainAction.LoadData> = Flowable.just(MainAction.LoadData)
 
     private fun loadDescription(): Flowable<MainAction.LoadDescription> {
-        return descriptionClickSubject
+        return descriptionClickProcessor
     }
 
     override fun render(state: MainViewState) {
@@ -111,7 +111,7 @@ class MainFragment() : DaggerFragment(),
 
     override val actionsSubject: PublishProcessor<MainAction> = PublishProcessor.create()
     override val lifecycleOwner: LifecycleOwner
-    get() = viewLifecycleOwner
+    get() = this
 
 
     override fun navigate(navigationState: NavigationState) {
