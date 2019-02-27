@@ -10,6 +10,7 @@ import io.reactivex.FlowableTransformer
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import io.reactivex.processors.BehaviorProcessor
 import io.reactivex.processors.PublishProcessor
 import io.reactivex.processors.UnicastProcessor
@@ -52,7 +53,7 @@ abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviStat
      */
     @CallSuper
     open fun processActions(actions: Flowable<Action>) {
-        Flowable.merge(actions, actionsProcessor)
+        Flowable.merge(actionsProcessor, actions)
                 .compose(actionToResultTransformer)
                 .scan(currentState) { state, result: Result -> reduce(state, result)}
                 .doOnNext {

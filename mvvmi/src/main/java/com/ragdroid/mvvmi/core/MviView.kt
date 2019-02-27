@@ -3,9 +3,7 @@ package com.ragdroid.mvvmi.core
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.fueled.mvp.core.mvp.NavigationState
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.processors.PublishProcessor
-import timber.log.Timber
 
 interface MviView<Action: MviAction, State: MviState> {
 
@@ -15,12 +13,6 @@ interface MviView<Action: MviAction, State: MviState> {
     fun subscribeToViewState() {
         viewModel.stateLiveData()
                 .observe(lifecycleOwner, Observer(this::render))
-//        viewModel.stateFlowable()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe {
-//                    render(it)
-//                    Timber.d(it.toString())
-//                }
     }
 
     val lifecycleOwner: LifecycleOwner
