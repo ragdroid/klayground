@@ -24,7 +24,6 @@ Currently divided into three module :
 ### Branches
 
 Contains two branches
- - [base-project] Without any MVP / MVI, just the backend and clean architecture in kotlin, to be used later
  - [mvi] MVP with MVI implementation
 
 ### Libraries
@@ -39,16 +38,11 @@ This project uses
  - Data Binding
  - RxBinding
  - Leak Canary
- - Architecture Components? Nullable :P
+ - Architecture Components - `ViewModel` and `LiveData`
  - Spek Framework for testing
-
-### Krazzy Kool Kotlin Kid
-
-Coming Soon!!
 
 ### To-do
  - More Features
- - Architecture Components?
  - Improve Testing
  - Improve Documentation
 
