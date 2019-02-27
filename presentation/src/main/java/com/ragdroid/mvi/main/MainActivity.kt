@@ -1,9 +1,6 @@
 package com.ragdroid.mvi.main
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.ragdroid.mvi.R
@@ -12,7 +9,7 @@ import com.ragdroid.mvi.helpers.BindActivity
 import com.ragdroid.mvi.viewmodel.MainViewModel
 import dagger.android.support.DaggerAppCompatActivity
 
-class MainActivity : DaggerAppCompatActivity(), MainView {
+class MainActivity : DaggerAppCompatActivity() {
 
 
     val binding: ActivityMainBinding by BindActivity(R.layout.activity_main)
