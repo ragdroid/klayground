@@ -54,6 +54,7 @@ abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviStat
     @CallSuper
     open fun processActions(actions: Flowable<Action>) {
         Flowable.merge(actionsProcessor, actions)
+                .doOnNext { print("Action : $it") }
                 .compose(actionToResultTransformer)
                 .scan(currentState) { state, result: Result -> reduce(state, result)}
                 .doOnNext {

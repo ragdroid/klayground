@@ -75,6 +75,7 @@ dependencies {
     implementation Deps.rxBindingSupportV4
 
     testImplementation TestDeps.junit
+    testImplementation TestDeps.mockitoKotlin
 
     androidTestImplementation(TestDeps.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
