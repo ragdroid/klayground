@@ -7,6 +7,7 @@ import com.ragdroid.mvi.models.CharacterItemState
 import com.ragdroid.mvvmi.core.MviAction
 import com.ragdroid.mvvmi.core.MviResult
 import com.ragdroid.mvvmi.core.MviState
+import com.ragdroid.mvvmi.core.NavigationState
 
 /**
  * State of the MainView
@@ -17,7 +18,7 @@ data class MainViewState(
         val characters: List<CharacterItemState>,
         val loadingError: Throwable?,
         val pullToRefreshing: Boolean,
-        val pullToRefreshError: Throwable?): MviState() {
+        val pullToRefreshError: Throwable?): MviState {
 
     companion object Factory {
         fun init() = MainViewState(
@@ -94,13 +95,13 @@ data class MainViewState(
 
 }
 
-sealed class MainAction: MviAction() {
+sealed class MainAction: MviAction {
     object PullToRefresh: MainAction()
     object LoadData: MainAction()
     data class LoadDescription(val characterId: Long): MainAction()
 }
 
-sealed class MainResult: MviResult() {
+sealed class MainResult: MviResult {
 
     object Loading: MainResult()
     data class LoadingError(val throwable: Throwable): MainResult()
@@ -115,4 +116,8 @@ sealed class MainResult: MviResult() {
         data class DescriptionError(private val id: Long, val throwable: Throwable): DescriptionResult(id)
         data class DescriptionLoadComplete(private val id: Long, val description: String): DescriptionResult(id)
     }
+}
+
+sealed class MainNavigation: NavigationState {
+    data class Snackbar(val message: String): MainNavigation()
 }

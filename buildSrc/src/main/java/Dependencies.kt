@@ -12,6 +12,7 @@ object Versions {
     val navigationVersion = "1.0.0-rc01"
     val lifecycleEx = "2.0.0"
     val lifecycleRx = "2.0.0"
+    val lifecycleSavedState = "1.0.0-alpha02"
     val lifecycleCompiler = "2.0.0"
     val arch_comp       = "1.1.1"
     val arch_comp_paging= "2.1.0"
@@ -30,6 +31,7 @@ object Versions {
     val appCompat = "1.0.2"
 
     // test libraries
+    val archTesting = "2.0.1"
     val kluent = "1.4"
     val spek = "1.1.5"
     val mockitoKotlin = "1.5.0"
@@ -46,6 +48,7 @@ object Deps {
     val reclaim = "com.github.fueled:reclaim:${Versions.reclaim}"
     val lifecycleEx = "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycleEx}"
     val lifecycleRx = "androidx.lifecycle:lifecycle-reactivestreams:${Versions.lifecycleRx}"
+    val lifecycleSavedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:${Versions.lifecycleSavedState}"
     val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycleRx}"
     val navigationFragment = "android.arch.navigation:navigation-fragment-ktx:${Versions.navigationVersion}"
     val navigationUIKtx = "android.arch.navigation:navigation-ui-ktx:${Versions.navigationVersion}"
@@ -74,6 +77,7 @@ object Deps {
 object TestDeps {
     val junit = "junit:junit:${Versions.junit}"
     val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espresso}"
+    val architectureCore = "androidx.arch.core:core-testing:${Versions.archTesting}"
     val testRunner = "androidx.test:runner:${Versions.testRunner}"
     val rxLint = "nl.littlerobots.rxlint:rxlint:${Versions.rxlint}"
     val leakCanary = "com.squareup.leakcanary:leakcanary-android:${Versions.leakcanary}"

@@ -1,21 +1,18 @@
 package com.ragdroid.mvi.viewmodel
 
 import com.ragdroid.data.MainRepository
-import com.ragdroid.data.base.SchedulerProvider
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvvmi.core.MviViewModel
 import io.reactivex.Flowable
-import io.reactivex.FlowableTransformer
-import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainFragmentViewModel @Inject constructor(private val resourceProvider: ResourceProvider,
-                                                private val schedulerProvider: SchedulerProvider,
                                                 private val repository: MainRepository):
         MviViewModel<MainAction, MainResult, MainViewState>(MainViewState.init()) {
 
@@ -34,10 +31,10 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
 
     private fun loadDescriptionResult(loadDescriptionActionStream: Flowable<MainAction.LoadDescription>): Flowable<MainResult> {
         return loadDescriptionActionStream
-                .observeOn(schedulerProvider.io())
+                .observeOn(Schedulers.io())
                 .flatMap { action ->
                     repository.fetchCharacter(action.characterId).toFlowable()
-                            .delay(2000, TimeUnit.MILLISECONDS, schedulerProvider.computation())
+                            .delay(2000, TimeUnit.MILLISECONDS, Schedulers.computation())
                             .map { item ->
                                 MainResult.DescriptionResult.DescriptionLoadComplete(item.id, item.description) as MainResult
                             }
@@ -51,7 +48,7 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
 
     private fun pullToRefreshResult(pullToRefreshActionStream: Flowable<MainAction.PullToRefresh>): Flowable<MainResult> {
         return pullToRefreshActionStream
-                .observeOn(schedulerProvider.io())
+                .observeOn(Schedulers.io())
                 .flatMap { ignored ->
                     repository.fetchCharacters().toFlowable()
                             .map { items -> MainResult.PullToRefreshComplete(items) as MainResult }
@@ -62,7 +59,7 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
 
     private fun loadingResult(loadDataActionStream: Flowable<MainAction.LoadData>): Flowable<MainResult> {
         return loadDataActionStream
-                .observeOn(schedulerProvider.io())
+                .observeOn(Schedulers.io())
                 .flatMap { ignored ->
                     repository.fetchCharacters().toFlowable()
                             .map { states -> MainResult.LoadingComplete(states) as MainResult }

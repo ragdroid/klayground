@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.fueled.mvp.core.mvp.NavigationState
+import com.ragdroid.mvvmi.core.NavigationState
 import com.fueled.reclaim.ItemPresenterProvider
 import com.fueled.reclaim.ItemsViewAdapter
 import com.google.android.material.snackbar.Snackbar
@@ -32,7 +32,7 @@ import javax.inject.Inject
 /**
  * A placeholder fragment containing a simple view.
  */
-class MainFragment() : DaggerFragment(),
+class MainFragment : DaggerFragment(),
         ItemPresenterProvider<CharacterItemPresenter>,
         CharacterItemPresenter, MviView<MainAction, MainViewState> {
 
@@ -62,9 +62,10 @@ class MainFragment() : DaggerFragment(),
         binding.listView.adapter = adapter
         binding.listView.addItemDecoration(decoration)
         setupViewModel()
-        super.onMviViewCreated()
-        viewModel.processActions(Flowable.merge(loadingIntent(), pullToRefreshIntent(), loadDescription()))
+        super.onMviViewCreated(savedInstanceState)
     }
+
+    override fun provideActions() = Flowable.merge(loadingIntent(), pullToRefreshIntent(), loadDescription())
 
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
@@ -90,6 +91,7 @@ class MainFragment() : DaggerFragment(),
     }
 
     override fun render(state: MainViewState) {
+        Timber.d("got state $state")
         binding.model = state
         when {
             state.pullToRefreshError != null -> return
@@ -109,14 +111,13 @@ class MainFragment() : DaggerFragment(),
         }
     }
 
-    override val actionsSubject: PublishProcessor<MainAction> = PublishProcessor.create()
     override val lifecycleOwner: LifecycleOwner
     get() = this
 
 
     override fun navigate(navigationState: NavigationState) {
         when (navigationState) {
-            is NavigationState.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT)
+            is MainNavigation.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT)
             else -> {//do nothing
                  }
         }

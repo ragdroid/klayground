@@ -47,6 +47,7 @@ dependencies {
     implementation Deps.reclaim
 
     //arch comp
+    implementation Deps.lifecycleSavedState
     implementation Deps.lifecycleEx
     implementation Deps.lifecycleRx
     kapt Deps.lifecycleCompiler
@@ -76,6 +77,7 @@ dependencies {
 
     testImplementation TestDeps.junit
     testImplementation TestDeps.mockitoKotlin
+    testImplementation TestDeps.architectureCore
 
     androidTestImplementation(TestDeps.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
