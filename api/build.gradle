@@ -5,23 +5,23 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    compile "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
-    implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
-    compile "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+    implementation Deps.kotlin_jdk
+    implementation Deps.retrofit
+    compile Deps.retrofitMoshiConverter
+    implementation Deps.okhttp
+    compile Deps.loggingInterceptor
     compile project(':mocks')
 
-    compile("com.squareup.okhttp3:mockwebserver:3.9.1") {
+    compile(TestDeps.mockWebServer) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation Deps.retrofitRxJavaAdapter
 
-    compile "com.google.dagger:dagger:$dagger"
-    compile "com.google.dagger:dagger-android:$dagger"
-    compile "com.google.dagger:dagger-android-support:$dagger"
-    kapt "com.google.dagger:dagger-compiler:$dagger"
-    kapt "com.google.dagger:dagger-android-processor:$dagger"
+    compile Deps.dagger
+    compile Deps.daggerAndroid
+    compile Deps.daggerAndroidSupport
+    kapt Deps.daggerCompiler
+    kapt Deps.daggerAndroidProcessor
 
-    testImplementation "junit:junit:$junit"
+    testImplementation TestDeps.junit
 }

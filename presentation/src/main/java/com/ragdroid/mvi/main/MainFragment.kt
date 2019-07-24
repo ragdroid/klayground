@@ -1,67 +1,79 @@
 package com.ragdroid.mvi.main
 
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.ragdroid.mvvmi.core.NavigationState
 import com.fueled.reclaim.ItemPresenterProvider
 import com.fueled.reclaim.ItemsViewAdapter
+import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
 import com.ragdroid.mvi.items.CharacterItem
 import com.ragdroid.mvi.models.CharacterItemPresenter
+import com.ragdroid.mvi.viewmodel.MainFragmentViewModel
+import com.ragdroid.mvvmi.core.MviView
 import dagger.android.support.DaggerFragment
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
+import io.reactivex.processors.PublishProcessor
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * A placeholder fragment containing a simple view.
  */
-class MainFragment : DaggerFragment(), MainFragmentView, ItemPresenterProvider<CharacterItemPresenter>, CharacterItemPresenter {
+class MainFragment : DaggerFragment(),
+        ItemPresenterProvider<CharacterItemPresenter>,
+        CharacterItemPresenter, MviView<MainAction, MainViewState> {
 
-    lateinit @Inject var presenter: MainFragmentPresenter
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     //delegate the binding initialization to BindFragment delegate
     private val binding: FragmentMainBinding by BindFragment(R.layout.fragment_main)
     private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ItemsViewAdapter(context)
     }
-    val descriptionClickSubject: PublishSubject<MainAction.LoadDescription> = PublishSubject.create()
+    private val descriptionClickProcessor: PublishProcessor<MainAction.LoadDescription> = PublishProcessor.create()
 
+    override lateinit var viewModel: MainFragmentViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? = binding.root
-
-
-    override fun onStart() {
-        super.onStart()
-        presenter.attachView(this)
+                              savedInstanceState: Bundle?): View? {
+        return binding.root
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val manager = LinearLayoutManager(context)
-        val decoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-        manager.orientation = LinearLayoutManager.VERTICAL
+        val decoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
+        manager.orientation = RecyclerView.VERTICAL
         binding.listView.layoutManager = manager
         binding.listView.adapter = adapter
         binding.listView.addItemDecoration(decoration)
+        setupViewModel()
+        super.onMviViewCreated(savedInstanceState)
     }
 
-    override fun onStop() {
-        presenter.detachView()
-        super.onStop()
+    override fun provideActions() = Flowable.merge(loadingIntent(), pullToRefreshIntent(), loadDescription())
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
     }
 
 
     override fun onCharacterDescriptionClicked(itemId: Long) {
-        descriptionClickSubject.onNext(MainAction.LoadDescription(itemId))
+        descriptionClickProcessor.onNext(MainAction.LoadDescription(itemId))
     }
 
     override fun getItemPresenter(): CharacterItemPresenter {
@@ -69,23 +81,24 @@ class MainFragment : DaggerFragment(), MainFragmentView, ItemPresenterProvider<C
     }
 
 
-    override fun pullToRefreshIntent(): Observable<MainAction.PullToRefresh>  =
-            binding.refreshLayout.refreshes().map { action -> MainAction.PullToRefresh }
+    private fun pullToRefreshIntent(): Flowable<MainAction.PullToRefresh> =
+        binding.refreshLayout.refreshes().toFlowable(BackpressureStrategy.DROP).map { MainAction.PullToRefresh }
 
-    override fun loadingIntent(): Observable<MainAction.LoadData> = Observable.just(MainAction.LoadData)
+    private fun loadingIntent(): Flowable<MainAction.LoadData> = Flowable.just(MainAction.LoadData)
 
-    override fun loadDescription(): Observable<MainAction.LoadDescription> {
-        return descriptionClickSubject
+    private fun loadDescription(): Flowable<MainAction.LoadDescription> {
+        return descriptionClickProcessor
     }
 
     override fun render(state: MainViewState) {
+        Timber.d("got state $state")
         binding.model = state
         when {
-            state.pullToRefreshError != null -> return@render
+            state.pullToRefreshError != null -> return
 
             state.loadingError != null -> {
                 adapter.clearAllRecyclerItems()
-                return@render
+                return
             }
 
             else -> {
@@ -95,6 +108,18 @@ class MainFragment : DaggerFragment(), MainFragmentView, ItemPresenterProvider<C
                         }
                 adapter.replaceItems(characterModelList, true)
             }
+        }
+    }
+
+    override val lifecycleOwner: LifecycleOwner
+    get() = this
+
+
+    override fun navigate(navigationState: NavigationState) {
+        when (navigationState) {
+            is MainNavigation.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT)
+            else -> {//do nothing
+                 }
         }
     }
 

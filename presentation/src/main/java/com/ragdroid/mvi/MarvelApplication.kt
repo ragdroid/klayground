@@ -1,6 +1,6 @@
 package com.ragdroid.mvi
 
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import com.ragdroid.mvi.dagger.DaggerAppComponent
 import com.ragdroid.mvi.helpers.MarvelBindingComponent
 import com.squareup.leakcanary.LeakCanary

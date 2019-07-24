@@ -27,9 +27,9 @@ constructor(
         return charactersApiSingle(timeStamp)
                 .map { dataWrapper: TDataWrapper<List<TCharacterMarvel>> ->
                     return@map dataWrapper.data.results
-                            .map({
+                            .map {
                                 characterMapper.map(it)
-                            }).toList()
+                            }.toList()
                 }
     }
 
@@ -38,9 +38,9 @@ constructor(
         return characterApiSingle(id, timeStamp)
                 .map { dataWrapper: TDataWrapper<List<TCharacterMarvel>> ->
                     return@map dataWrapper.data.results
-                            .map({
+                            .map {
                                 characterMapper.map(it)
-                            }).getOrNull(0)
+                            }.getOrNull(0)
                 }.map {
                     it ?: throw IllegalAccessException("Character for id $id not found")
                 }

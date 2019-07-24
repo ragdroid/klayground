@@ -6,17 +6,17 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion Versions.compileSdk
     defaultConfig {
         applicationId "com.ragdroid.mvi"
-        minSdkVersion 21
-        targetSdkVersion 26
+        minSdkVersion Versions.minSdk
+        targetSdkVersion Versions.compileSdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "PUBLIC_KEY", "\"${marvelPublicKey}\"")
         buildConfigField("String", "PRIVATE_KEY", "\"${marvelPrivateKey}\"")
-        buildConfigField("String", "BASE_URL", "\"http://gateway.marvel.com/v1/public/\"")
+        buildConfigField("String", "BASE_URL", "\"https://gateway.marvel.com/v1/public/\"")
         multiDexEnabled true
     }
     buildTypes {
@@ -37,54 +37,59 @@ android {
 
 
 dependencies {
+    api project(':mvvmi')
     api project(':data')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation Deps.kotlin_jdk
 
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    implementation Deps.constraintLayout
 
-    implementation "com.jakewharton.timber:timber:$timberVersion"
-    implementation "com.github.fueled:reclaim:$reclaim"
+    implementation Deps.timber
+    implementation Deps.reclaim
 
+    //arch comp
+    implementation Deps.lifecycleSavedState
+    implementation Deps.lifecycleEx
+    implementation Deps.lifecycleRx
+    kapt Deps.lifecycleCompiler
 
-    implementation "android.arch.lifecycle:extensions:$arch_comp"
-    implementation "android.arch.lifecycle:reactivestreams:$arch_comp"
-    kapt "android.arch.lifecycle:compiler:$arch_comp"
+    implementation Deps.navigationFragment
+    implementation Deps.navigationUIKtx
 
-    implementation "android.arch.paging:runtime:$arch_comp_paging"
+    implementation Deps.pagingRuntime
 
-    implementation "com.android.support:appcompat-v7:$support_library"
-    implementation "com.android.support:design:$support_library"
+    implementation Deps.appCompat
+    implementation Deps.material
 
-    implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
-    implementation "com.github.bumptech.glide:glide:$glideVersion"
-    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+    implementation Deps.glide
+    kapt Deps.glideCompiler
 
-    implementation "com.google.dagger:dagger:$dagger"
-    implementation "com.google.dagger:dagger-android:$dagger"
-    implementation "com.google.dagger:dagger-android-support:$dagger"
-    kapt "com.google.dagger:dagger-compiler:$dagger"
-    kapt "com.google.dagger:dagger-android-processor:$dagger"
+    implementation Deps.dagger
+    implementation Deps.daggerAndroid
+    implementation Deps.daggerAndroidSupport
+    kapt Deps.daggerCompiler
+    kapt Deps.daggerAndroidProcessor
 
-    implementation "io.reactivex.rxjava2:rxjava:$rx"
-    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
-    implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBindings"
-    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:$rxBindings"
-    implementation "com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:$rxBindings"
+    implementation Deps.rx
+    implementation Deps.rxAndroid
+    implementation Deps.rxBindingKt
+    implementation Deps.rxBindingRvKt
+    implementation Deps.rxBindingSupportV4
 
-    testImplementation "junit:junit:$junit"
+    testImplementation TestDeps.junit
+    testImplementation TestDeps.mockitoKotlin
+    testImplementation TestDeps.architectureCore
 
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espresso", {
+    androidTestImplementation(TestDeps.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation TestDeps.testRunner
 
-    debugImplementation "nl.littlerobots.rxlint:rxlint:$rxlint"
+    debugImplementation TestDeps.rxLint
 
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary"
+    debugImplementation TestDeps.leakCanary
+    releaseImplementation TestDeps.leakCanaryNoOp
 
-    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+    implementation(TestDeps.crashlytics) {
         transitive = true
     }
 }

@@ -15,22 +15,22 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation Deps.kotlin_jdk
     compile project(':api')
 
-    implementation "com.jakewharton.timber:timber:$timberVersion"
-    implementation "io.reactivex.rxjava2:rxjava:$rx"
+    compile Deps.timber
+    implementation Deps.rx
 
-    compile "com.google.dagger:dagger:$dagger"
-    compile "com.google.dagger:dagger-android:$dagger"
-    compile "com.google.dagger:dagger-android-support:$dagger"
-    kapt "com.google.dagger:dagger-compiler:$dagger"
-    kapt "com.google.dagger:dagger-android-processor:$dagger"
+    compile Deps.dagger
+    compile Deps.daggerAndroid
+    compile Deps.daggerAndroidSupport
+    kapt Deps.daggerCompiler
+    kapt Deps.daggerAndroidProcessor
 
-    testCompile ("org.amshove.kluent:kluent:$kluent")
-    testImplementation "org.jetbrains.spek:spek-api:$spek"
-    testImplementation "org.jetbrains.spek:spek-junit-platform-engine:$spek"
-    testCompile "com.nhaarman:mockito-kotlin-kt1.1:$mockitoKotlin"
-    testImplementation "org.mockito:mockito-core:$mockito"
+    testCompile TestDeps.kluent
+    testImplementation TestDeps.spek
+    testImplementation TestDeps.spekJunitPlatformEngine
+    testCompile TestDeps.mockitoKotlin
+    testImplementation TestDeps.mockito
 
 }

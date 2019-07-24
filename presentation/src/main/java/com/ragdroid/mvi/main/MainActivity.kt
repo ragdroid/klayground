@@ -1,35 +1,42 @@
 package com.ragdroid.mvi.main
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.ActivityMainBinding
 import com.ragdroid.mvi.helpers.BindActivity
+import com.ragdroid.mvi.viewmodel.MainViewModel
 import dagger.android.support.DaggerAppCompatActivity
 
-import javax.inject.Inject
+class MainActivity : DaggerAppCompatActivity() {
 
-class MainActivity : DaggerAppCompatActivity(), MainView {
-
-    @Inject lateinit var presenter: MainPresenter
 
     val binding: ActivityMainBinding by BindActivity(R.layout.activity_main)
+
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(binding.toolbar)
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+
+        openFragment()
 
         binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "presenter $presenter injected", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "presenter $viewModel added", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
-        presenter.attachView(this)
     }
 
-    override fun onDestroy() {
-        presenter.detachView()
-        super.onDestroy()
+    private fun openFragment() {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fraggy = MainFragment()
+        fragmentTransaction.replace(R.id.fragment_container, fraggy)
+        fragmentTransaction.commit()
     }
+
 }
 
 
