@@ -1,10 +1,11 @@
 
 object Versions {
-    val kotlin_version = "1.3.11"
+    val kotlin_version = "1.3.30"
+    val kotlinx_coroutines = "1.3.0-RC"
 
     val compileSdk = 28
     val minSdk = 21
-    val retrofitVersion = "2.3.0"
+    val retrofitVersion = "2.6.0"
     val support_library = "27.1.1"
     val material = "1.0.0"
     val okhttpVersion = "3.9.1"
@@ -29,6 +30,7 @@ object Versions {
     val reclaim         = "1.2.2"
     val rxBindings      = "2.1.1"
     val appCompat = "1.0.2"
+    val android_ktx = "1.2.0-alpha02"
 
     // test libraries
     val archTesting = "2.0.1"
@@ -42,7 +44,9 @@ object Versions {
 }
 
 object Deps {
-    val kotlin_jdk = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin_version}"
+    val kotlin_jdk = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
+    val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.kotlinx_coroutines}"
+    val androidKtx = "androidx.core:core-ktx:${Versions.android_ktx}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraint_layout}"
     val timber = "com.jakewharton.timber:timber:${Versions.timberVersion}"
     val reclaim = "com.github.fueled:reclaim:${Versions.reclaim}"

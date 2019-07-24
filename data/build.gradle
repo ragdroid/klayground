@@ -15,22 +15,23 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
+    implementation Deps.coroutinesAndroid
     implementation Deps.kotlin_jdk
-    compile project(':api')
+    implementation project(':api')
 
-    compile Deps.timber
+    implementation Deps.timber
     implementation Deps.rx
 
-    compile Deps.dagger
-    compile Deps.daggerAndroid
-    compile Deps.daggerAndroidSupport
+    implementation Deps.dagger
+    implementation Deps.daggerAndroid
+    implementation Deps.daggerAndroidSupport
     kapt Deps.daggerCompiler
     kapt Deps.daggerAndroidProcessor
 
-    testCompile TestDeps.kluent
+    testImplementation TestDeps.kluent
     testImplementation TestDeps.spek
     testImplementation TestDeps.spekJunitPlatformEngine
-    testCompile TestDeps.mockitoKotlin
+    testImplementation TestDeps.mockitoKotlin
     testImplementation TestDeps.mockito
 
 }

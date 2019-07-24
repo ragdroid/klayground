@@ -1,17 +1,15 @@
-package com.ragdroid.mvi.main
+package com.ragdroid.mvi.characters
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ragdroid.mvvmi.core.NavigationState
 import com.fueled.reclaim.ItemPresenterProvider
 import com.fueled.reclaim.ItemsViewAdapter
 import com.google.android.material.snackbar.Snackbar
@@ -20,9 +18,13 @@ import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
 import com.ragdroid.mvi.items.CharacterItem
+import com.ragdroid.mvi.main.MainAction
+import com.ragdroid.mvi.main.MainNavigation
+import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvi.models.CharacterItemPresenter
 import com.ragdroid.mvi.viewmodel.MainFragmentViewModel
 import com.ragdroid.mvvmi.core.MviView
+import com.ragdroid.mvvmi.core.NavigationState
 import dagger.android.support.DaggerFragment
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
@@ -35,7 +37,7 @@ import javax.inject.Inject
  */
 class MainFragment : DaggerFragment(),
         ItemPresenterProvider<CharacterItemPresenter>,
-        CharacterItemPresenter, MviView<MainAction, MainViewState> {
+        CharacterItemPresenter {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -47,7 +49,7 @@ class MainFragment : DaggerFragment(),
     }
     private val descriptionClickProcessor: PublishProcessor<MainAction.LoadDescription> = PublishProcessor.create()
 
-    override lateinit var viewModel: MainFragmentViewModel
+    lateinit var viewModel: MainFragmentViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -63,14 +65,10 @@ class MainFragment : DaggerFragment(),
         binding.listView.adapter = adapter
         binding.listView.addItemDecoration(decoration)
         setupViewModel()
-        super.onMviViewCreated(savedInstanceState)
     }
-
-    override fun provideActions() = Flowable.merge(loadingIntent(), pullToRefreshIntent(), loadDescription())
 
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
-        viewModel.stateLiveData().observe(lifecycleOwner, Observer { render(it) })
     }
 
 
@@ -84,7 +82,7 @@ class MainFragment : DaggerFragment(),
 
 
     private fun pullToRefreshIntent(): Flowable<MainAction.PullToRefresh> =
-        binding.refreshLayout.refreshes().toFlowable(BackpressureStrategy.DROP).map { MainAction.PullToRefresh }
+            binding.refreshLayout.refreshes().toFlowable(BackpressureStrategy.DROP).map { MainAction.PullToRefresh }
 
     private fun loadingIntent(): Flowable<MainAction.LoadData> = Flowable.just(MainAction.LoadData)
 
@@ -92,7 +90,7 @@ class MainFragment : DaggerFragment(),
         return descriptionClickProcessor
     }
 
-    override fun render(state: MainViewState) {
+    fun render(state: MainViewState) {
         Timber.d("got state $state")
         binding.model = state
         when {
@@ -113,15 +111,12 @@ class MainFragment : DaggerFragment(),
         }
     }
 
-    override val lifecycleOwner: LifecycleOwner
-    get() = this
 
-
-    override fun navigate(navigationState: NavigationState) {
+    fun navigate(navigationState: NavigationState) {
         when (navigationState) {
             is MainNavigation.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT)
             else -> {//do nothing
-                 }
+            }
         }
     }
 

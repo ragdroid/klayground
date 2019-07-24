@@ -10,8 +10,6 @@ import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.main.MainAction
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.schedulers.TestScheduler
-import junit.framework.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.TimeUnit
@@ -24,8 +22,8 @@ class MainFragmentViewModelTest: BaseUnitTest() {
     }
 
     val mainRepository: MainRepository = mock() {
-        on { fetchCharacters() } doReturn Single.just(TestDataFactory.mockCharacters)
-        on { fetchCharacter(1234) } doReturn Single.just(TestDataFactory.marcelCharacter1)
+        on { fetchCharactersSingle() } doReturn Single.just(TestDataFactory.mockCharacters)
+        on { fetchCharacterSingle(1234) } doReturn Single.just(TestDataFactory.marcelCharacter1)
     }
 
     private lateinit var viewmodel: MainFragmentViewModel

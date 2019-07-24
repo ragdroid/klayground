@@ -8,21 +8,37 @@ import com.ragdroid.data.entity.AppConfig
 import com.ragdroid.data.entity.CharacterMapper
 import com.ragdroid.data.entity.CharacterMarvel
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 /**
  * Created by garimajain on 18/11/17.
  */
-class MainRepositoryImpl
-@Inject
-constructor(
+class MainRepositoryImpl @Inject constructor(
         private val marvelApi: MarvelApi,
         private val characterMapper: CharacterMapper,
         private val config: AppConfig,
         private val helpers: Helpers): MainRepository {
 
+    override suspend fun fetchCharacters(): Flow<List<CharacterMarvel>> = flow {
+        val timeStamp = System.currentTimeMillis()
+        val charactersWrapper = marvelApi.getCharacters(
+                config.publicKey,
+                helpers.buildMD5Digest("" + timeStamp + config.privateKey
+                        + config.publicKey),
+                timeStamp,
+                0,
+                50)
+        val characters = charactersWrapper.data.results
+                .map {
+                    characterMapper.map(it)
+                }.toList()
+        emit(characters)
 
-    override fun fetchCharacters(): Single<List<CharacterMarvel>> {
+    }
+
+    override fun fetchCharactersSingle(): Single<List<CharacterMarvel>> {
         val timeStamp = System.currentTimeMillis()
         return charactersApiSingle(timeStamp)
                 .map { dataWrapper: TDataWrapper<List<TCharacterMarvel>> ->
@@ -33,7 +49,7 @@ constructor(
                 }
     }
 
-    override fun fetchCharacter(id: Long): Single<CharacterMarvel> {
+    override fun fetchCharacterSingle(id: Long): Single<CharacterMarvel> {
         val timeStamp = System.currentTimeMillis()
         return characterApiSingle(id, timeStamp)
                 .map { dataWrapper: TDataWrapper<List<TCharacterMarvel>> ->
@@ -47,7 +63,7 @@ constructor(
     }
 
     private fun characterApiSingle(id: Long, timeStamp: Long): Single<TDataWrapper<List<TCharacterMarvel>>> {
-        return marvelApi.getCharacter(
+        return marvelApi.getCharacterSingle(
                 id,
                 config.publicKey,
                 helpers.buildMD5Digest("" + timeStamp + config.privateKey
@@ -56,7 +72,7 @@ constructor(
         )
     }
     private fun charactersApiSingle(timeStamp: Long): Single<TDataWrapper<List<TCharacterMarvel>>> {
-        return marvelApi.getCharacters(
+        return marvelApi.getCharactersSingle(
                 config.publicKey,
                 helpers.buildMD5Digest("" + timeStamp + config.privateKey
                         + config.publicKey),
@@ -70,6 +86,7 @@ constructor(
 
 interface MainRepository {
 
-    fun fetchCharacters(): Single<List<CharacterMarvel>>
-    fun fetchCharacter(id: Long): Single<CharacterMarvel>
+    fun fetchCharactersSingle(): Single<List<CharacterMarvel>>
+    suspend fun fetchCharacters(): Flow<List<CharacterMarvel>>
+    fun fetchCharacterSingle(id: Long): Single<CharacterMarvel>
 }
