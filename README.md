@@ -20,11 +20,9 @@ Currently divided into three module :
     presentation --> data --> api/cache
     ```
 
-
-### Branches
-
-Contains two branches
- - [mvi] MVP with MVI implementation
+### Base Mvi
+It also consists of a base mvi module which can be re-used. It can be found in the [`mvvmi`](https://github.com/ragdroid/klayground/tree/master/mvvmi) Module.
+It extracts away the boilerplate which comes with implementing MVI base for each screen. It can be used in both activities and fragments.
 
 ### Libraries
 
