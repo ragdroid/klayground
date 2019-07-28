@@ -11,8 +11,8 @@ object Versions {
     val okhttpVersion = "3.9.1"
     val constraint_layout = "2.0.0-alpha3"
     val navigationVersion = "1.0.0-rc01"
-    val lifecycleEx = "2.0.0"
-    val lifecycleRx = "2.0.0"
+    val lifecycleEx = "2.2.0-alpha02"
+    val lifecycleRx = "2.2.0-alpha02"
     val lifecycleSavedState = "1.0.0-alpha02"
     val lifecycleCompiler = "2.0.0"
     val arch_comp       = "1.1.1"
@@ -31,6 +31,8 @@ object Versions {
     val rxBindings      = "2.1.1"
     val appCompat = "1.0.2"
     val android_ktx = "1.2.0-alpha02"
+    val coroutine_binding = "1.0.0-RC2"
+    val flowExtensions = "0.0.2"
 
     // test libraries
     val archTesting = "2.0.1"
@@ -54,6 +56,7 @@ object Deps {
     val lifecycleRx = "androidx.lifecycle:lifecycle-reactivestreams:${Versions.lifecycleRx}"
     val lifecycleSavedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:${Versions.lifecycleSavedState}"
     val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycleRx}"
+    val lifecycleViewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycleEx}"
     val navigationFragment = "android.arch.navigation:navigation-fragment-ktx:${Versions.navigationVersion}"
     val navigationUIKtx = "android.arch.navigation:navigation-ui-ktx:${Versions.navigationVersion}"
     val pagingRuntime = "androidx.paging:paging-runtime:${Versions.arch_comp_paging}"
@@ -76,6 +79,8 @@ object Deps {
     val retrofitRxJavaAdapter = "com.squareup.retrofit2:adapter-rxjava2:${Versions.retrofitVersion}"
     val okhttp = "com.squareup.okhttp3:okhttp:${Versions.okhttpVersion}"
     val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.okhttpVersion}"
+    val coroutineBindingSwipeRefresh = "com.github.satoshun.coroutinebinding:coroutinebinding-swiperefreshlayout:${Versions.coroutine_binding}"
+    val flowExtensions = "com.github.akarnokd:kotlin-flow-extensions:${Versions.flowExtensions}"
 }
 
 object TestDeps {

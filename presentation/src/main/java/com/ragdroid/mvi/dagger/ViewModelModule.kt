@@ -2,6 +2,7 @@ package com.ragdroid.mvi.dagger
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.ragdroid.mvi.characters.CharactersViewModel
 import com.ragdroid.mvi.viewmodel.MainFragmentViewModel
 import dagger.Binds
 import dagger.Module
@@ -17,5 +18,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainFragmentViewModel::class)
     internal abstract fun mainViewModel(viewModel: MainFragmentViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CharactersViewModel::class)
+    internal abstract fun charactersViewModel(viewModel: CharactersViewModel): ViewModel
 
 }

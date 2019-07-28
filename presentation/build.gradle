@@ -58,6 +58,7 @@ android {
 dependencies {
     api project(':mvvmi')
     api project(':data')
+
     implementation Deps.kotlin_jdk
     implementation Deps.coroutinesAndroid
     implementation Deps.androidKtx
@@ -95,6 +96,10 @@ dependencies {
     implementation Deps.rxBindingKt
     implementation Deps.rxBindingRvKt
     implementation Deps.rxBindingSupportV4
+
+    implementation Deps.coroutineBindingSwipeRefresh
+    implementation Deps.flowExtensions
+    implementation Deps.lifecycleViewModelKtx
 
     testImplementation TestDeps.junit
     testImplementation TestDeps.mockitoKotlin

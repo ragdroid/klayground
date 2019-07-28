@@ -21,7 +21,7 @@ class MainRepositoryImpl @Inject constructor(
         private val config: AppConfig,
         private val helpers: Helpers): MainRepository {
 
-    override suspend fun fetchCharacters(): Flow<List<CharacterMarvel>> = flow {
+    override suspend fun fetchCharacters(): List<CharacterMarvel> {
         val timeStamp = System.currentTimeMillis()
         val charactersWrapper = marvelApi.getCharacters(
                 config.publicKey,
@@ -34,8 +34,7 @@ class MainRepositoryImpl @Inject constructor(
                 .map {
                     characterMapper.map(it)
                 }.toList()
-        emit(characters)
-
+        return characters
     }
 
     override fun fetchCharactersSingle(): Single<List<CharacterMarvel>> {
@@ -87,6 +86,6 @@ class MainRepositoryImpl @Inject constructor(
 interface MainRepository {
 
     fun fetchCharactersSingle(): Single<List<CharacterMarvel>>
-    suspend fun fetchCharacters(): Flow<List<CharacterMarvel>>
+    suspend fun fetchCharacters(): List<CharacterMarvel>
     fun fetchCharacterSingle(id: Long): Single<CharacterMarvel>
 }

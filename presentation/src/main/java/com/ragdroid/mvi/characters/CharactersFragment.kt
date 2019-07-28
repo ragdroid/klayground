@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fueled.reclaim.ItemPresenterProvider
 import com.fueled.reclaim.ItemsViewAdapter
+import com.github.satoshun.coroutinebinding.androidx.swiperefreshlayout.widget.refreshes
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
@@ -23,21 +23,26 @@ import com.ragdroid.mvi.main.MainNavigation
 import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvi.models.CharacterItemPresenter
 import com.ragdroid.mvi.viewmodel.MainFragmentViewModel
-import com.ragdroid.mvvmi.core.MviView
 import com.ragdroid.mvvmi.core.NavigationState
 import dagger.android.support.DaggerFragment
+import hu.akarnokd.kotlin.flow.PublishSubject
+import hu.akarnokd.kotlin.flow.concatWith
 import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
-import io.reactivex.processors.PublishProcessor
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A placeholder fragment containing a simple view.
  */
-class MainFragment : DaggerFragment(),
+class CharactersFragment : DaggerFragment(),
         ItemPresenterProvider<CharacterItemPresenter>,
-        CharacterItemPresenter {
+        CharacterItemPresenter, CoroutineScope {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -47,9 +52,10 @@ class MainFragment : DaggerFragment(),
     private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ItemsViewAdapter(context)
     }
-    private val descriptionClickProcessor: PublishProcessor<MainAction.LoadDescription> = PublishProcessor.create()
+    private val descriptionClickProcessor: PublishSubject<MainAction.LoadDescription> = PublishSubject()
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.IO
 
-    lateinit var viewModel: MainFragmentViewModel
+    lateinit var viewModel: CharactersViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -68,12 +74,16 @@ class MainFragment : DaggerFragment(),
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
+        viewModel.stateLiveData().observe(viewLifecycleOwner, Observer { render(it) })
+        viewModel.processActions(loadingIntent().concatWith(pullToRefreshIntent().concatWith(loadDescription())))
     }
 
 
     override fun onCharacterDescriptionClicked(itemId: Long) {
-        descriptionClickProcessor.onNext(MainAction.LoadDescription(itemId))
+        launch {
+            descriptionClickProcessor.emit(MainAction.LoadDescription(itemId))
+        }
     }
 
     override fun getItemPresenter(): CharacterItemPresenter {
@@ -81,12 +91,12 @@ class MainFragment : DaggerFragment(),
     }
 
 
-    private fun pullToRefreshIntent(): Flowable<MainAction.PullToRefresh> =
-            binding.refreshLayout.refreshes().toFlowable(BackpressureStrategy.DROP).map { MainAction.PullToRefresh }
+    private fun pullToRefreshIntent(): Flow<MainAction.PullToRefresh> =
+            binding.refreshLayout.refreshes().consumeAsFlow().map { MainAction.PullToRefresh }
 
-    private fun loadingIntent(): Flowable<MainAction.LoadData> = Flowable.just(MainAction.LoadData)
+    private fun loadingIntent(): Flow<MainAction.LoadData> = flow { emit(MainAction.LoadData) }
 
-    private fun loadDescription(): Flowable<MainAction.LoadDescription> {
+    private fun loadDescription(): Flow<MainAction.LoadDescription> {
         return descriptionClickProcessor
     }
 
@@ -120,4 +130,8 @@ class MainFragment : DaggerFragment(),
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        coroutineContext.cancel()
+    }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.ragdroid.mvi.R
+import com.ragdroid.mvi.characters.CharactersFragment
 import com.ragdroid.mvi.databinding.ActivityMainBinding
 import com.ragdroid.mvi.helpers.BindActivity
 import com.ragdroid.mvi.viewmodel.MainViewModel
@@ -32,7 +33,8 @@ class MainActivity : DaggerAppCompatActivity() {
     private fun openFragment() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fraggy = MainFragment()
+//        val fraggy = MainFragment()
+        val fraggy = CharactersFragment()
         fragmentTransaction.replace(R.id.fragment_container, fraggy)
         fragmentTransaction.commit()
     }

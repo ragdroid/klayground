@@ -17,5 +17,5 @@ abstract class MainActivityModule {
 
     @ContributesAndroidInjector
     @FragmentScope
-    internal abstract fun charactersFragmeent(): CharactersFragment
+    internal abstract fun charactersFragment(): CharactersFragment
 }
