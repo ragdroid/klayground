@@ -56,6 +56,7 @@ class MainFragment : DaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.toolbar.setTitle(R.string.title_rx)
         val manager = LinearLayoutManager(context)
         val decoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
         manager.orientation = RecyclerView.VERTICAL

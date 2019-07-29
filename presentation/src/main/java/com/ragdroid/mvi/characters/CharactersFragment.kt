@@ -17,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
+import com.ragdroid.mvi.helpers.merge
 import com.ragdroid.mvi.items.CharacterItem
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainNavigation
@@ -64,6 +65,7 @@ class CharactersFragment : DaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.toolbar.setTitle(R.string.title_flow)
         val manager = LinearLayoutManager(context)
         val decoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
         manager.orientation = RecyclerView.VERTICAL
@@ -76,7 +78,7 @@ class CharactersFragment : DaggerFragment(),
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
         viewModel.stateLiveData().observe(viewLifecycleOwner, Observer { render(it) })
-        viewModel.processActions(loadingIntent().concatWith(pullToRefreshIntent().concatWith(loadDescription())))
+        viewModel.processActions(loadingIntent().merge(pullToRefreshIntent(), loadDescription()))
     }
 
 

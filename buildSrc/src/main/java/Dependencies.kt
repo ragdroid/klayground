@@ -17,7 +17,7 @@ object Versions {
     val lifecycleCompiler = "2.0.0"
     val arch_comp       = "1.1.1"
     val arch_comp_paging= "2.1.0"
-    val dagger          = "2.20"
+    val dagger          = "2.24"
     val ktlint          = "0.10.0"
     val leakcanary      = "1.6.2"
     val rx              = "2.1.6"

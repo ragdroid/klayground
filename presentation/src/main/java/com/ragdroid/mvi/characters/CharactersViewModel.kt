@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ragdroid.data.MainRepository
 import com.ragdroid.mvi.base.ResourceProvider
+import com.ragdroid.mvi.helpers.merge
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
@@ -32,7 +33,7 @@ class CharactersViewModel @Inject constructor(
 
     fun processActions(actions: Flow<MainAction>) {
         viewModelScope.launch {
-            actionsFlow.concatWith(actions)
+            actionsFlow.merge(actions)
                     .onEach {
                         Timber.v("onAction $it")
                     }
