@@ -84,7 +84,7 @@ class MainFragment : DaggerFragment(),
 
 
     private fun pullToRefreshIntent(): Flowable<MainAction.PullToRefresh> =
-        binding.refreshLayout.refreshes().toFlowable(BackpressureStrategy.DROP).map { MainAction.PullToRefresh }
+            binding.refreshLayout.refreshes().toFlowable(BackpressureStrategy.DROP).map { MainAction.PullToRefresh }
 
     private fun loadingIntent(): Flowable<MainAction.LoadData> = Flowable.just(MainAction.LoadData)
 
@@ -95,30 +95,26 @@ class MainFragment : DaggerFragment(),
     override fun render(state: MainViewState) {
         Timber.d("got state $state")
         binding.model = state
-        when {
-            state.loadingError != null -> {
-                adapter.clearAllRecyclerItems()
-            }
-
-            else -> {
-                val characterModelList =
-                        state.characters.map {
-                            CharacterItem(it, this)
-                        }
-                adapter.replaceItems(characterModelList, true)
-            }
+        if (state.loadingError != null) {
+            adapter.clearAllRecyclerItems()
         }
+        
+        val characterModelList =
+                state.characters.map {
+                    CharacterItem(it, this)
+                }
+        adapter.replaceItems(characterModelList, true)
     }
 
     override val lifecycleOwner: LifecycleOwner
-    get() = this
+        get() = this
 
 
     override fun navigate(navigationState: NavigationState) {
         when (navigationState) {
             is MainNavigation.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT).show()
             else -> {//do nothing
-                 }
+            }
         }
     }
 

@@ -55,8 +55,10 @@ data class MainViewState(
                     pullToRefreshError = null)
             is MainResult.PullToRefreshError -> copy(
                     pullToRefreshing = false,
+                    loadingError = null,
                     pullToRefreshError = result.throwable)
             is MainResult.PullToRefreshComplete -> copy(
+                    loadingError = null,
                     pullToRefreshing = false,
                     pullToRefreshError = null,
                     characters = reduceCharactersList(characters, result.characters, resources))
@@ -70,7 +72,7 @@ data class MainViewState(
                 val newCharactersList = characters.slice(0 until previousItemStateIndex)
                         .plus(listOf(newItemState))
                         .plus(characters.slice(previousItemStateIndex + 1 until characters.size))
-                copy(characters = newCharactersList)
+                copy(characters = newCharactersList, loadingError = null, pullToRefreshError = null)
             }
 
         }

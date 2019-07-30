@@ -76,6 +76,7 @@ class CharactersViewModel @Inject constructor(
                     val characters = mainRepository.fetchCharacters()
                     emit(MainResult.PullToRefreshComplete(characters))
                 } catch (exception: Exception) {
+                    Timber.e(exception)
                     navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
                     emit(MainResult.PullToRefreshError(exception))
                 }
@@ -86,6 +87,7 @@ class CharactersViewModel @Inject constructor(
                     val characters = mainRepository.fetchCharacters()
                     emit(MainResult.LoadingComplete(characters))
                 } catch (exception: Exception) {
+                    Timber.e(exception)
                     navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
                     emit(MainResult.LoadingError(exception))
                 }
@@ -98,8 +100,9 @@ class CharactersViewModel @Inject constructor(
                     }
                     .onStart { emit(MainResult.DescriptionResult.DescriptionLoading(action.characterId)) }
                     .catch {
+                        navigate(MainNavigation.Snackbar(it.message ?: "Unknown Error"))
                         Timber.e(it)
-                        MainResult.DescriptionResult.DescriptionError(action.characterId, it)
+                        emit(MainResult.DescriptionResult.DescriptionError(action.characterId, it))
                     }
         }
     }
