@@ -71,7 +71,6 @@ class MainFragment : DaggerFragment(),
 
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
-        viewModel.stateLiveData().observe(lifecycleOwner, Observer { render(it) })
     }
 
 
@@ -97,11 +96,8 @@ class MainFragment : DaggerFragment(),
         Timber.d("got state $state")
         binding.model = state
         when {
-            state.pullToRefreshError != null -> return
-
             state.loadingError != null -> {
                 adapter.clearAllRecyclerItems()
-                return
             }
 
             else -> {
@@ -120,7 +116,7 @@ class MainFragment : DaggerFragment(),
 
     override fun navigate(navigationState: NavigationState) {
         when (navigationState) {
-            is MainNavigation.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT)
+            is MainNavigation.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT).show()
             else -> {//do nothing
                  }
         }

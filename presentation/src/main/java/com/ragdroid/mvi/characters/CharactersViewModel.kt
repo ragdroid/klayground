@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ragdroid.data.MainRepository
+import com.ragdroid.data.entity.CharacterMarvel
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.helpers.merge
 import com.ragdroid.mvi.main.MainAction
+import com.ragdroid.mvi.main.MainNavigation
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
+import com.ragdroid.mvvmi.core.NavigationState
 import hu.akarnokd.kotlin.flow.concatWith
 import hu.akarnokd.kotlin.flow.publish
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -25,11 +28,18 @@ class CharactersViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider
 ): ViewModel() {
 
+    fun onAction(action: MainAction) = broadcastChannel.offer(action)
+
     var broadcastChannel = ConflatedBroadcastChannel<MainAction>()
     var actionsFlow = broadcastChannel.openSubscription().consumeAsFlow()
 
     fun stateLiveData(): LiveData<MainViewState> = stateLiveData
     private val stateLiveData = MutableLiveData<MainViewState>()
+
+    fun navigationLiveData(): LiveData<MainNavigation> = navigationLiveData
+    private val navigationLiveData = MutableLiveData<MainNavigation>()
+
+    fun navigate(navigationState: MainNavigation) = navigationLiveData.postValue(navigationState)
 
     fun processActions(actions: Flow<MainAction>) {
         viewModelScope.launch {
@@ -43,11 +53,12 @@ class CharactersViewModel @Inject constructor(
                     }
                     .scan(MainViewState.init()) { state, result: MainResult -> reduce(state, result) }
                     .onEach {
-                        Timber.v(it.toString())
+                        Timber.v("onState $it")
                         stateLiveData.postValue(it)
                     }
                     .onStart { Timber.d("subscribed to states") }
                     .collect {
+                        Timber.v("onState $it")
                         stateLiveData.postValue(it)
                     }
         }
@@ -58,27 +69,39 @@ class CharactersViewModel @Inject constructor(
     }
 
     private fun actionToResultFlow(action: MainAction): Flow<MainResult> {
-       return when(action) {
-           is MainAction.PullToRefresh -> flow {
-               emit(MainResult.PullToRefreshing)
-               try {
-                   val characters = mainRepository.fetchCharacters()
-                   emit(MainResult.PullToRefreshComplete(characters))
-               } catch (exception: Exception) {
-                   emit(MainResult.PullToRefreshError(exception))
-               }
-           }
-           is MainAction.LoadData -> flow {
-               emit(MainResult.Loading)
-               try {
-                   val characters = mainRepository.fetchCharacters()
-                   emit(MainResult.LoadingComplete(characters))
-               } catch (exception: Exception) {
-                   emit(MainResult.LoadingError(exception))
-               }
-           }
-           else -> flow {  }
-       }
+        return when(action) {
+            is MainAction.PullToRefresh -> flow {
+                emit(MainResult.PullToRefreshing)
+                try {
+                    val characters = mainRepository.fetchCharacters()
+                    emit(MainResult.PullToRefreshComplete(characters))
+                } catch (exception: Exception) {
+                    navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+                    emit(MainResult.PullToRefreshError(exception))
+                }
+            }
+            is MainAction.LoadData -> flow {
+                emit(MainResult.Loading)
+                try {
+                    val characters = mainRepository.fetchCharacters()
+                    emit(MainResult.LoadingComplete(characters))
+                } catch (exception: Exception) {
+                    navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+                    emit(MainResult.LoadingError(exception))
+                }
+            }
+            is MainAction.LoadDescription -> flow {
+                emit(mainRepository.fetchCharacter(action.characterId)) }
+                    .delayEach(2000)
+                    .map { item ->
+                        MainResult.DescriptionResult.DescriptionLoadComplete(item.id, item.description) as MainResult
+                    }
+                    .onStart { emit(MainResult.DescriptionResult.DescriptionLoading(action.characterId)) }
+                    .catch {
+                        Timber.e(it)
+                        MainResult.DescriptionResult.DescriptionError(action.characterId, it)
+                    }
+        }
     }
 
 }

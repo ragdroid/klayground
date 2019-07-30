@@ -81,11 +81,27 @@ class MainRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun fetchCharacter(id: Long): CharacterMarvel {
+        val timeStamp = System.currentTimeMillis()
+        val characterWrapper = marvelApi.getCharacter(
+                id,
+                config.publicKey,
+                helpers.buildMD5Digest("" + timeStamp + config.privateKey
+                        + config.publicKey), timeStamp)
+
+        return characterWrapper.data.results
+                .map {
+                    characterMapper.map(it)
+                }.getOrNull(0) ?: throw IllegalAccessException("Character for id $id not found")
+    }
+
+
 }
 
 interface MainRepository {
 
     fun fetchCharactersSingle(): Single<List<CharacterMarvel>>
     suspend fun fetchCharacters(): List<CharacterMarvel>
+    suspend fun fetchCharacter(id: Long): CharacterMarvel
     fun fetchCharacterSingle(id: Long): Single<CharacterMarvel>
 }

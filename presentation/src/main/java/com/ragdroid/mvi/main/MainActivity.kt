@@ -32,8 +32,8 @@ class MainActivity : DaggerAppCompatActivity() {
     private fun openFragment() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val fraggy = MainFragment()
-//        val fraggy = CharactersFragment()
+//        val fraggy = MainFragment()
+        val fraggy = CharactersFragment()
         fragmentTransaction.replace(R.id.fragment_container, fraggy)
         fragmentTransaction.commit()
     }

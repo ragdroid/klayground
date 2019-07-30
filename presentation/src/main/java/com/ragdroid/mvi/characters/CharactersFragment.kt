@@ -54,7 +54,7 @@ class CharactersFragment : DaggerFragment(),
         ItemsViewAdapter(context)
     }
     private val descriptionClickProcessor: PublishSubject<MainAction.LoadDescription> = PublishSubject()
-    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.IO
+    override val coroutineContext: CoroutineContext = Job() + Dispatchers.Main
 
     lateinit var viewModel: CharactersViewModel
 
@@ -78,14 +78,13 @@ class CharactersFragment : DaggerFragment(),
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
         viewModel.stateLiveData().observe(viewLifecycleOwner, Observer { render(it) })
+        viewModel.navigationLiveData().observe(viewLifecycleOwner, Observer { navigate(it) })
         viewModel.processActions(loadingIntent().merge(pullToRefreshIntent(), loadDescription()))
     }
 
 
     override fun onCharacterDescriptionClicked(itemId: Long) {
-        launch {
-            descriptionClickProcessor.emit(MainAction.LoadDescription(itemId))
-        }
+        viewModel.onAction(MainAction.LoadDescription(itemId))
     }
 
     override fun getItemPresenter(): CharacterItemPresenter {
@@ -126,7 +125,7 @@ class CharactersFragment : DaggerFragment(),
 
     fun navigate(navigationState: NavigationState) {
         when (navigationState) {
-            is MainNavigation.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT)
+            is MainNavigation.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT).show()
             else -> {//do nothing
             }
         }
