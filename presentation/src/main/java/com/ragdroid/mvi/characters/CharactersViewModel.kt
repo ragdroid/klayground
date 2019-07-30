@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ragdroid.data.MainRepository
 import com.ragdroid.data.entity.CharacterMarvel
 import com.ragdroid.mvi.base.ResourceProvider
+import com.ragdroid.mvi.helpers.DispatchProvider
 import com.ragdroid.mvi.helpers.merge
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainNavigation
@@ -15,6 +16,8 @@ import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvvmi.core.NavigationState
 import hu.akarnokd.kotlin.flow.concatWith
 import hu.akarnokd.kotlin.flow.publish
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.*
@@ -22,11 +25,14 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class CharactersViewModel @Inject constructor(
         private val mainRepository: MainRepository,
-        private val resourceProvider: ResourceProvider
-): ViewModel() {
+        private val resourceProvider: ResourceProvider,
+        dispatchProvider: DispatchProvider
+): ViewModel(), CoroutineScope {
+    override val coroutineContext: CoroutineContext = SupervisorJob() + dispatchProvider.io()
 
     fun onAction(action: MainAction) = broadcastChannel.offer(action)
 

@@ -114,6 +114,7 @@ dependencies {
 
     debugImplementation TestDeps.leakCanary
     releaseImplementation TestDeps.leakCanaryNoOp
+    testImplementation TestDeps.coroutinesTest
 
     implementation(TestDeps.crashlytics) {
         transitive = true

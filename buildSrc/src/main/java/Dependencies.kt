@@ -38,7 +38,7 @@ object Versions {
     val archTesting = "2.0.1"
     val kluent = "1.4"
     val spek = "1.1.5"
-    val mockitoKotlin = "1.5.0"
+    val mockitoKotlin = "2.1.0"
     val mockito = "2.8.9"
     val testRunner = "1.1.1"
     val espresso = "3.1.0"
@@ -96,6 +96,7 @@ object TestDeps {
     val kluent = "org.amshove.kluent:kluent:${Versions.kluent}"
     val spek = "org.jetbrains.spek:spek-api:${Versions.spek}"
     val spekJunitPlatformEngine = "org.jetbrains.spek:spek-junit-platform-engine:${Versions.spek}"
-    val mockitoKotlin = "com.nhaarman:mockito-kotlin-kt1.1:${Versions.mockitoKotlin}"
+    val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoKotlin}"
     val mockito = "org.mockito:mockito-core:${Versions.mockito}"
+    val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinx_coroutines}"
 }

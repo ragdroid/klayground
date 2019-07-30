@@ -1,10 +1,9 @@
 package com.ragdroid.mvi.viewmodel
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
 import com.ragdroid.data.MainRepository
-import com.ragdroid.data.base.SchedulerProvider
 import com.ragdroid.mvi.TestDataFactory
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.main.MainAction
