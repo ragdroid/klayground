@@ -84,7 +84,9 @@ class CharactersFragment : DaggerFragment(),
 
 
     override fun onCharacterDescriptionClicked(itemId: Long) {
-        viewModel.onAction(MainAction.LoadDescription(itemId))
+        launch {
+            descriptionClickProcessor.emit(MainAction.LoadDescription(itemId))
+        }
     }
 
     override fun getItemPresenter(): CharacterItemPresenter {

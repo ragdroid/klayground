@@ -14,16 +14,23 @@ fun <T> Flow<T>.mergeWith(other: Flow<T>): Flow<T> = channelFlow {
     other.collect { send(it) }
 }
 
-fun <T> Flow<T>.merge(vararg other: Flow<T>): Flow<T> = channelFlow {
+fun <T> Flow<T>.merge(other: Flow<T>,
+                      other2: Flow<T>): Flow<T> = channelFlow {
     // collect from one coroutine and send it
     launch {
         collect { send(it) }
     }
     // collect and send from this coroutine, too, concurrently
-    other.forEach {
-        it.collect {
+    launch {
+        other.collect {
+            send(it)
+        }
+    }
+    launch {
+        other2.collect {
             send(it)
         }
     }
 }
+
 

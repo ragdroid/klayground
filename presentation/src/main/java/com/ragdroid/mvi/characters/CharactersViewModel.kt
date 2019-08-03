@@ -9,6 +9,7 @@ import com.ragdroid.data.entity.CharacterMarvel
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.helpers.DispatchProvider
 import com.ragdroid.mvi.helpers.merge
+import com.ragdroid.mvi.helpers.mergeWith
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainNavigation
 import com.ragdroid.mvi.main.MainResult
@@ -17,6 +18,7 @@ import com.ragdroid.mvvmi.core.NavigationState
 import hu.akarnokd.kotlin.flow.concatWith
 import hu.akarnokd.kotlin.flow.publish
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -27,6 +29,7 @@ import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@ExperimentalCoroutinesApi
 class CharactersViewModel @Inject constructor(
         private val mainRepository: MainRepository,
         private val resourceProvider: ResourceProvider,
@@ -49,7 +52,7 @@ class CharactersViewModel @Inject constructor(
 
     fun processActions(actions: Flow<MainAction>) {
         viewModelScope.launch {
-            actionsFlow.merge(actions)
+            actionsFlow.mergeWith(actions)
                     .onEach {
                         Timber.v("onAction $it")
                     }

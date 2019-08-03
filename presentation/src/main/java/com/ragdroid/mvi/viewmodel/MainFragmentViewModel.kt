@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainFragmentViewModel @Inject constructor(private val resourceProvider: ResourceProvider,
-                                                private val repository: MainRepository):
+                                                private val mainRepository: MainRepository):
         MviViewModel<MainAction, MainResult, MainViewState>(MainViewState.init()) {
 
     override fun actionsToResultTransformer(actions: Flowable<MainAction>): Flowable<MainResult> =
@@ -33,7 +33,8 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
         return loadDescriptionActionStream
                 .observeOn(Schedulers.io())
                 .flatMap { action ->
-                    repository.fetchCharacterSingle(action.characterId).toFlowable()
+
+                    mainRepository.fetchCharacterSingle(action.characterId).toFlowable()
                             .delay(2000, TimeUnit.MILLISECONDS, Schedulers.computation())
                             .map { item ->
                                 MainResult.DescriptionResult.DescriptionLoadComplete(item.id, item.description) as MainResult
@@ -50,7 +51,9 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
         return pullToRefreshActionStream
                 .observeOn(Schedulers.io())
                 .flatMap { ignored ->
-                    repository.fetchCharactersSingle().toFlowable()
+
+
+                    mainRepository.fetchCharactersSingle().toFlowable()
                             .map { items -> MainResult.PullToRefreshComplete(items) as MainResult }
                             .startWith(MainResult.PullToRefreshing)
                             .onErrorReturn { error -> MainResult.PullToRefreshError(error) }
@@ -61,7 +64,7 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
         return loadDataActionStream
                 .observeOn(Schedulers.io())
                 .flatMap { ignored ->
-                    repository.fetchCharactersSingle().toFlowable()
+                    mainRepository.fetchCharactersSingle().toFlowable()
                             .map { states -> MainResult.LoadingComplete(states) as MainResult }
                             .startWith(MainResult.Loading)
                             .onErrorReturn(MainResult::LoadingError)
