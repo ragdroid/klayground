@@ -5,37 +5,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ragdroid.data.MainRepository
-import com.ragdroid.data.entity.CharacterMarvel
 import com.ragdroid.mvi.base.ResourceProvider
-import com.ragdroid.mvi.helpers.DispatchProvider
-import com.ragdroid.mvi.helpers.merge
 import com.ragdroid.mvi.helpers.mergeWith
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainNavigation
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
-import com.ragdroid.mvvmi.core.NavigationState
-import hu.akarnokd.kotlin.flow.concatWith
-import hu.akarnokd.kotlin.flow.publish
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 class CharactersViewModel @Inject constructor(
         private val mainRepository: MainRepository,
-        private val resourceProvider: ResourceProvider,
-        dispatchProvider: DispatchProvider
-): ViewModel(), CoroutineScope {
-    override val coroutineContext: CoroutineContext = SupervisorJob() + dispatchProvider.io()
+        private val resourceProvider: ResourceProvider
+): ViewModel() {
 
     fun onAction(action: MainAction) = broadcastChannel.offer(action)
 
@@ -81,25 +68,23 @@ class CharactersViewModel @Inject constructor(
         return when(action) {
             is MainAction.PullToRefresh -> flow {
                 emit(MainResult.PullToRefreshing)
-                try {
-                    val characters = mainRepository.fetchCharacters()
-                    emit(MainResult.PullToRefreshComplete(characters))
-                } catch (exception: Exception) {
-                    Timber.e(exception)
-                    navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-                    emit(MainResult.PullToRefreshError(exception))
-                }
+                val characters = mainRepository.fetchCharacters()
+                emit(MainResult.PullToRefreshComplete(characters))
+            }.catch { exception ->
+                Timber.e(exception)
+                navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+                emit(MainResult.PullToRefreshError(exception))
             }
             is MainAction.LoadData -> flow {
                 emit(MainResult.Loading)
-                try {
-                    val characters = mainRepository.fetchCharacters()
-                    emit(MainResult.LoadingComplete(characters))
-                } catch (exception: Exception) {
-                    Timber.e(exception)
-                    navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-                    emit(MainResult.LoadingError(exception))
-                }
+                val characters = mainRepository.fetchCharacters()
+                emit(MainResult.LoadingComplete(characters))
+            }
+//                    .delayEach(1000)
+                    .catch { exception ->
+                Timber.e(exception)
+                navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+                emit(MainResult.LoadingError(exception))
             }
             is MainAction.LoadDescription -> flow {
                 emit(mainRepository.fetchCharacter(action.characterId)) }

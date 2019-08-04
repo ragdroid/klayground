@@ -9,16 +9,11 @@ import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.viewmodel.BaseUnitTest
 import com.ragdroid.mvi.viewmodel.blockingObserve
-import io.reactivex.Single
 import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.TimeUnit
 
 class CharactersViewModelTest: BaseUnitTest() {
 
@@ -39,7 +34,7 @@ class CharactersViewModelTest: BaseUnitTest() {
     @Before
     fun setUp() {
         super.setup()
-        viewmodel = CharactersViewModel(mainRepository, resourceProvider, testDispatcherProvider)
+        viewmodel = CharactersViewModel(mainRepository, resourceProvider)
     }
 
     @Test
@@ -48,6 +43,8 @@ class CharactersViewModelTest: BaseUnitTest() {
         val loadDataFlow = flow { emit(MainAction.LoadData) }
 
         viewmodel.processActions(loadDataFlow)
+
+//        testDispatcher.advanceTimeBy(2000)
 
         val state = viewmodel.stateLiveData().blockingObserve()
 
