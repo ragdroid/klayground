@@ -19,6 +19,7 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.rx2.await
 import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -28,6 +29,7 @@ class CharactersViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val dispatchProvider: DispatchProvider
 ): ViewModel(), CoroutineScope {
+
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob().plus(dispatchProvider.main()).plus(dispatchProvider.io())
 
@@ -51,8 +53,13 @@ class CharactersViewModel @Inject constructor(
                     .onEach {
                         Timber.v("onAction $it")
                     }
-                    .publish {
-                        actionToResultTransformer(it)
+                    //to demonstrate streams
+//                    .publish {
+//                        actionToResultTransformer(it)
+//                    }
+                    //to demonstrate non-streams solution
+                    .flatMapMerge {
+                        actionToResultFlow(it)
                     }
                     .onEach {
                         Timber.v("onResult $it")
@@ -68,6 +75,49 @@ class CharactersViewModel @Inject constructor(
                         stateLiveData.postValue(it)
                     }
         }
+    }
+
+    private fun actionToResultFlow(action: MainAction): Flow<MainResult> = flow {
+        when(action) {
+            is MainAction.PullToRefresh -> {
+                try {
+                    emit(MainResult.PullToRefreshing)
+                    val characters = mainRepository.fetchCharactersSingle().await()
+                    emit(MainResult.PullToRefreshComplete(characters))
+                } catch (exception: Exception) {
+                    Timber.e(exception)
+                    navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+                    emit(MainResult.PullToRefreshError(exception))
+                }
+            }
+            is MainAction.LoadData -> {
+                try {
+                    emit(MainResult.Loading)
+                    val characters = mainRepository.fetchCharacters()
+                    emit(MainResult.LoadingComplete(characters))
+                } catch (exception: Exception) {
+                    Timber.e(exception)
+                    navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+                    emit(MainResult.LoadingError(exception))
+                }
+            }
+            is MainAction.LoadDescription -> {
+                try {
+                    emit(MainResult.DescriptionResult.DescriptionLoading(action.characterId))
+                    val character = mainRepository.fetchCharacter(action.characterId)
+                    delay(2000L)
+                    emit(MainResult.DescriptionResult.DescriptionLoadComplete(character.id, character.description))
+                } catch (exception : Exception) {
+                    navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+                    Timber.e(exception)
+                    emit(MainResult.DescriptionResult.DescriptionError(action.characterId, exception))
+                }
+            }
+        }
+    }.catch { exception ->
+        Timber.e(exception)
+        navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+        emit(MainResult.LoadingError(exception))
     }
 
     private fun actionToResultTransformer(actionsFlow: Flow<MainAction>): Flow<MainResult> {
