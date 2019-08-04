@@ -23,12 +23,9 @@ import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainNavigation
 import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvi.models.CharacterItemPresenter
-import com.ragdroid.mvi.viewmodel.MainFragmentViewModel
 import com.ragdroid.mvvmi.core.NavigationState
 import dagger.android.support.DaggerFragment
 import hu.akarnokd.kotlin.flow.PublishSubject
-import hu.akarnokd.kotlin.flow.concatWith
-import io.reactivex.BackpressureStrategy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -72,14 +69,16 @@ class CharactersFragment : DaggerFragment(),
         binding.listView.layoutManager = manager
         binding.listView.adapter = adapter
         binding.listView.addItemDecoration(decoration)
-        setupViewModel()
+        setupViewModel(savedInstanceState)
     }
 
-    private fun setupViewModel() {
+    private fun setupViewModel(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
         viewModel.stateLiveData().observe(viewLifecycleOwner, Observer { render(it) })
         viewModel.navigationLiveData().observe(viewLifecycleOwner, Observer { navigate(it) })
-        viewModel.processActions(loadingIntent().merge(pullToRefreshIntent(), loadDescription()))
+        if (savedInstanceState == null) {
+            viewModel.processActions(loadingIntent().merge(pullToRefreshIntent(), loadDescription()))
+        }
     }
 
 

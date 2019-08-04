@@ -6,24 +6,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ragdroid.data.MainRepository
 import com.ragdroid.mvi.base.ResourceProvider
+import com.ragdroid.mvi.helpers.DispatchProvider
 import com.ragdroid.mvi.helpers.mergeWith
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainNavigation
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.await
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 class CharactersViewModel @Inject constructor(
         private val mainRepository: MainRepository,
-        private val resourceProvider: ResourceProvider
-): ViewModel() {
+        private val resourceProvider: ResourceProvider,
+        private val dispatchProvider: DispatchProvider
+): ViewModel(), CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob().plus(dispatchProvider.main()).plus(dispatchProvider.io())
 
     fun onAction(action: MainAction) = broadcastChannel.offer(action)
 
@@ -39,7 +43,7 @@ class CharactersViewModel @Inject constructor(
     fun navigate(navigationState: MainNavigation) = navigationLiveData.postValue(navigationState)
 
     fun processActions(actions: Flow<MainAction>) {
-        viewModelScope.launch {
+        launch {
             actionsFlow.mergeWith(actions)
                     .onEach {
                         Timber.v("onAction $it")
@@ -71,7 +75,9 @@ class CharactersViewModel @Inject constructor(
                 emit(MainResult.PullToRefreshing)
                 val characters = mainRepository.fetchCharactersSingle().await()
                 emit(MainResult.PullToRefreshComplete(characters))
-            }.catch { exception ->
+            }
+                    .flowOn(dispatchProvider.io())
+                    .catch { exception ->
                 Timber.e(exception)
                 navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
                 emit(MainResult.PullToRefreshError(exception))
@@ -102,4 +108,7 @@ class CharactersViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        coroutineContext.cancelChildren()
+    }
 }
