@@ -50,6 +50,7 @@ class CharactersFragment : DaggerFragment(),
     private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ItemsViewAdapter(context)
     }
+    //we can also use a ConflatedBroadcastChannel here
     private val descriptionClickProcessor: PublishSubject<MainAction.LoadDescription> = PublishSubject()
     override val coroutineContext: CoroutineContext = Job() + Dispatchers.Main
 

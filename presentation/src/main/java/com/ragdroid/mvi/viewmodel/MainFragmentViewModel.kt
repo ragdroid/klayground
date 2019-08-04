@@ -53,7 +53,9 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
         return pullToRefreshActionStream
                 .observeOn(Schedulers.io())
                 .flatMap { ignored ->
-
+                    //This is done only to demonstrate RxJava-Coroutine interop
+                    //We should use available Rx API instead :
+                    //val characters = mainRepository.fetchCharactersSingle()
                     rxSingle {
                         mainRepository.fetchCharacters()
                     }.toFlowable()

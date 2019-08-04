@@ -33,6 +33,7 @@ class CharactersViewModel @Inject constructor(
 
     fun onAction(action: MainAction) = broadcastChannel.offer(action)
 
+    //we can also use kotlin-flow-extensions `PublishSubject` here
     var broadcastChannel = ConflatedBroadcastChannel<MainAction>()
     var actionsFlow = broadcastChannel.openSubscription().consumeAsFlow()
 
@@ -96,6 +97,9 @@ class CharactersViewModel @Inject constructor(
         actionsFlow.flatMapMerge {
             flow {
                 emit(MainResult.PullToRefreshing)
+                //This is done only to demonstrate RxJava-Coroutine interop
+                //We should use available coroutine API instead :
+                //val characters = mainRepository.fetchCharacters()
                 val characters = mainRepository.fetchCharactersSingle().await()
                 emit(MainResult.PullToRefreshComplete(characters))
             }
@@ -115,6 +119,7 @@ class CharactersViewModel @Inject constructor(
                 val characters = mainRepository.fetchCharacters()
                 emit(MainResult.LoadingComplete(characters))
             }
+                    //uncommeent this to see unit test behavior with delays
 //                    .delayEach(1000)
                     .catch { exception ->
                         Timber.e(exception)
