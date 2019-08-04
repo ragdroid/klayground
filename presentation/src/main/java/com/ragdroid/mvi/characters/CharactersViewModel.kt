@@ -3,15 +3,17 @@ package com.ragdroid.mvi.characters
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ragdroid.data.MainRepository
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.helpers.DispatchProvider
+import com.ragdroid.mvi.helpers.merge
 import com.ragdroid.mvi.helpers.mergeWith
+import com.ragdroid.mvi.helpers.ofType
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainNavigation
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
+import hu.akarnokd.kotlin.flow.publish
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
@@ -48,7 +50,9 @@ class CharactersViewModel @Inject constructor(
                     .onEach {
                         Timber.v("onAction $it")
                     }
-                    .flatMapMerge { actionToResultFlow(it) }
+                    .publish {
+                        actionToResultTransformer(it)
+                    }
                     .onEach {
                         Timber.v("onResult $it")
                     }
@@ -65,35 +69,15 @@ class CharactersViewModel @Inject constructor(
         }
     }
 
-    private fun reduce(state: MainViewState, result: MainResult): MainViewState {
-        return state.reduce(result, resourceProvider)
+    private fun actionToResultTransformer(actionsFlow: Flow<MainAction>): Flow<MainResult> {
+        return loadingResult(actionsFlow.ofType(MainAction.LoadData::class.java))
+                .merge(loadDescriptionResult(actionsFlow.ofType(MainAction.LoadDescription::class.java)),
+                        pullToRefreshResult(actionsFlow.ofType(MainAction.PullToRefresh::class.java)))
     }
 
-    private fun actionToResultFlow(action: MainAction): Flow<MainResult> {
-        return when(action) {
-            is MainAction.PullToRefresh -> flow {
-                emit(MainResult.PullToRefreshing)
-                val characters = mainRepository.fetchCharactersSingle().await()
-                emit(MainResult.PullToRefreshComplete(characters))
-            }
-                    .flowOn(dispatchProvider.io())
-                    .catch { exception ->
-                Timber.e(exception)
-                navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-                emit(MainResult.PullToRefreshError(exception))
-            }
-            is MainAction.LoadData -> flow {
-                emit(MainResult.Loading)
-                val characters = mainRepository.fetchCharacters()
-                emit(MainResult.LoadingComplete(characters))
-            }
-//                    .delayEach(1000)
-                    .catch { exception ->
-                Timber.e(exception)
-                navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-                emit(MainResult.LoadingError(exception))
-            }
-            is MainAction.LoadDescription -> flow {
+    private fun loadDescriptionResult(actionsFlow: Flow<MainAction.LoadDescription>): Flow<MainResult>  = flow {
+        actionsFlow.flatMapMerge { action ->
+            flow {
                 emit(mainRepository.fetchCharacter(action.characterId)) }
                     .delayEach(2000)
                     .map { item ->
@@ -106,6 +90,44 @@ class CharactersViewModel @Inject constructor(
                         emit(MainResult.DescriptionResult.DescriptionError(action.characterId, it))
                     }
         }
+    }
+
+    private fun pullToRefreshResult(actionsFlow: Flow<MainAction>): Flow<MainResult> = flow {
+        actionsFlow.flatMapMerge {
+            flow {
+                emit(MainResult.PullToRefreshing)
+                val characters = mainRepository.fetchCharactersSingle().await()
+                emit(MainResult.PullToRefreshComplete(characters))
+            }
+                    .flowOn(dispatchProvider.io())
+                    .catch { exception ->
+                        Timber.e(exception)
+                        navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+                        emit(MainResult.PullToRefreshError(exception))
+                    }
+        }
+    }
+
+    private fun loadingResult(actionsFlow: Flow<MainAction.LoadData>): Flow<MainResult> = flow {
+        actionsFlow.flatMapMerge {
+            flow {
+                emit(MainResult.Loading)
+                val characters = mainRepository.fetchCharacters()
+                emit(MainResult.LoadingComplete(characters))
+            }
+//                    .delayEach(1000)
+                    .catch { exception ->
+                        Timber.e(exception)
+                        navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+
+                    }
+        }
+
+    }
+
+
+    private fun reduce(state: MainViewState, result: MainResult): MainViewState {
+        return state.reduce(result, resourceProvider)
     }
 
     override fun onCleared() {
