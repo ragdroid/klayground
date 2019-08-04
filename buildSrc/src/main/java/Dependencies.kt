@@ -48,6 +48,7 @@ object Versions {
 object Deps {
     val kotlin_jdk = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
     val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.kotlinx_coroutines}"
+    val coroutinesRxInterop = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${Versions.kotlinx_coroutines}"
     val androidKtx = "androidx.core:core-ktx:${Versions.android_ktx}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraint_layout}"
     val timber = "com.jakewharton.timber:timber:${Versions.timberVersion}"

@@ -16,6 +16,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     implementation Deps.coroutinesAndroid
+    implementation Deps.coroutinesRxInterop
     implementation Deps.kotlin_jdk
     api project(':api')
 

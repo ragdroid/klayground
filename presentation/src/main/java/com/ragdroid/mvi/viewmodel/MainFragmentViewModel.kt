@@ -8,6 +8,8 @@ import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvvmi.core.MviViewModel
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.rxFlowable
+import kotlinx.coroutines.rx2.rxSingle
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -52,8 +54,9 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
                 .observeOn(Schedulers.io())
                 .flatMap { ignored ->
 
-
-                    mainRepository.fetchCharactersSingle().toFlowable()
+                    rxSingle {
+                        mainRepository.fetchCharacters()
+                    }.toFlowable()
                             .map { items -> MainResult.PullToRefreshComplete(items) as MainResult }
                             .startWith(MainResult.PullToRefreshing)
                             .onErrorReturn { error -> MainResult.PullToRefreshError(error) }

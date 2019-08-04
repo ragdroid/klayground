@@ -15,6 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.await
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -68,7 +69,7 @@ class CharactersViewModel @Inject constructor(
         return when(action) {
             is MainAction.PullToRefresh -> flow {
                 emit(MainResult.PullToRefreshing)
-                val characters = mainRepository.fetchCharacters()
+                val characters = mainRepository.fetchCharactersSingle().await()
                 emit(MainResult.PullToRefreshComplete(characters))
             }.catch { exception ->
                 Timber.e(exception)
