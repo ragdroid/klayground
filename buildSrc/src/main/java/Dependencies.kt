@@ -33,6 +33,7 @@ object Versions {
     val android_ktx = "1.2.0-alpha02"
     val coroutine_binding = "1.0.0-RC2"
     val flowExtensions = "0.0.2"
+    val wasabeef = "3.0.0"
 
     // test libraries
     val archTesting = "2.0.1"
@@ -82,6 +83,7 @@ object Deps {
     val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.okhttpVersion}"
     val coroutineBindingSwipeRefresh = "com.github.satoshun.coroutinebinding:coroutinebinding-swiperefreshlayout:${Versions.coroutine_binding}"
     val flowExtensions = "com.github.akarnokd:kotlin-flow-extensions:${Versions.flowExtensions}"
+    val recyclerViewAnimations = "jp.wasabeef:recyclerview-animators:${Versions.wasabeef}"
 }
 
 object TestDeps {

@@ -97,6 +97,7 @@ dependencies {
     implementation Deps.rxBindingKt
     implementation Deps.rxBindingRvKt
     implementation Deps.rxBindingSupportV4
+    implementation Deps.recyclerViewAnimations
 
     implementation Deps.coroutineBindingSwipeRefresh
     implementation Deps.flowExtensions

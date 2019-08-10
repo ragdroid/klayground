@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ragdroid.mvvmi.core.NavigationState
@@ -19,6 +17,7 @@ import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
+import com.ragdroid.mvi.helpers.SpaceItemDecoration
 import com.ragdroid.mvi.items.CharacterItem
 import com.ragdroid.mvi.models.CharacterItemPresenter
 import com.ragdroid.mvi.viewmodel.MainFragmentViewModel
@@ -27,6 +26,7 @@ import dagger.android.support.DaggerFragment
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.processors.PublishProcessor
+import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -58,10 +58,11 @@ class MainFragment : DaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         binding.toolbar.setTitle(R.string.title_rx)
         val manager = LinearLayoutManager(context)
-        val decoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
+        val decoration = SpaceItemDecoration(resources.getDimensionPixelOffset(R.dimen.keyline_1), false, false, true, false)
         manager.orientation = RecyclerView.VERTICAL
         binding.listView.layoutManager = manager
         binding.listView.adapter = adapter
+        binding.listView.itemAnimator = FadeInAnimator()
         binding.listView.addItemDecoration(decoration)
         setupViewModel()
         super.onMviViewCreated(savedInstanceState)

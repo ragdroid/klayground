@@ -12,7 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         tools:context="com.ragdroid.mvi.main.MainFragment"
         tools:showIn="@layout/activity_main">
 
@@ -22,7 +22,7 @@
             bind:layout_constraintStart_toStartOf="parent"
             bind:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?actionBarSize"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <androidx.appcompat.widget.Toolbar
@@ -40,6 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="@{!model.loading}"
+            android:paddingTop="@dimen/keyline_1"
+            android:clipToPadding="false"
             bind:layout_constraintBottom_toBottomOf="parent"
             bind:layout_constraintEnd_toEndOf="parent"
             bind:layout_constraintStart_toStartOf="parent"
@@ -49,7 +51,7 @@
                 android:paddingBottom="@dimen/space"
                 android:paddingEnd="@dimen/space"
                 android:paddingStart="@dimen/space"
-                android:paddingTop="@dimen/space"
+                android:paddingTop="@dimen/keyline_1"
                 android:clipToPadding="false"
                 android:id="@+id/listView"
                 android:layout_width="match_parent"

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fueled.reclaim.ItemPresenterProvider
@@ -17,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
+import com.ragdroid.mvi.helpers.SpaceItemDecoration
 import com.ragdroid.mvi.helpers.merge
 import com.ragdroid.mvi.items.CharacterItem
 import com.ragdroid.mvi.main.MainAction
@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import jp.wasabeef.recyclerview.animators.FadeInAnimator
 
 /**
  * A placeholder fragment containing a simple view.
@@ -65,10 +66,11 @@ class CharactersFragment : DaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         binding.toolbar.setTitle(R.string.title_flow)
         val manager = LinearLayoutManager(context)
-        val decoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
+        val decoration = SpaceItemDecoration(resources.getDimensionPixelOffset(R.dimen.keyline_1), false, false, true, false)
         manager.orientation = RecyclerView.VERTICAL
         binding.listView.layoutManager = manager
         binding.listView.adapter = adapter
+        binding.listView.itemAnimator = FadeInAnimator()
         binding.listView.addItemDecoration(decoration)
         setupViewModel(savedInstanceState)
     }
