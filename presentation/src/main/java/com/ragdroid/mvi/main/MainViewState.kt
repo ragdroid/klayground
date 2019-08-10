@@ -16,17 +16,13 @@ import com.ragdroid.mvvmi.core.NavigationState
 data class MainViewState(
         val loading: Boolean,
         val characters: List<CharacterItemState>,
-        val loadingError: Throwable?,
-        val pullToRefreshing: Boolean,
-        val pullToRefreshError: Throwable?): MviState {
+        val pullToRefreshing: Boolean): MviState {
 
     companion object Factory {
         fun init() = MainViewState(
                 loading = true,
                 characters = emptyList(),
-                loadingError = null,
-                pullToRefreshing = false,
-                pullToRefreshError = null
+                pullToRefreshing = false
         )
     }
 
@@ -35,32 +31,24 @@ data class MainViewState(
         val characters = characters
         return when (result) {
             is MainResult.Loading -> copy(
-                    loading = true,
-                    loadingError = null)
+                    loading = true)
             is MainResult.LoadingError -> copy(
-                    loading = false,
-                    loadingError = result.throwable)
+                    loading = false)
 
             is MainResult.LoadingComplete -> {
                 val characterStates = reduceCharactersList(characters, result.characters, resources)
                 copy(
                         loading = false,
-                        loadingError = null,
                         characters = characterStates)
             }
 
             is MainResult.PullToRefreshing -> copy(
                     loading = false,
-                    pullToRefreshing = true,
-                    pullToRefreshError = null)
+                    pullToRefreshing = true)
             is MainResult.PullToRefreshError -> copy(
-                    pullToRefreshing = false,
-                    loadingError = null,
-                    pullToRefreshError = result.throwable)
+                    pullToRefreshing = false)
             is MainResult.PullToRefreshComplete -> copy(
-                    loadingError = null,
                     pullToRefreshing = false,
-                    pullToRefreshError = null,
                     characters = reduceCharactersList(characters, result.characters, resources))
 
             is MainResult.DescriptionResult -> {
@@ -72,7 +60,7 @@ data class MainViewState(
                 val newCharactersList = characters.slice(0 until previousItemStateIndex)
                         .plus(listOf(newItemState))
                         .plus(characters.slice(previousItemStateIndex + 1 until characters.size))
-                copy(characters = newCharactersList, loadingError = null, pullToRefreshError = null)
+                copy(characters = newCharactersList)
             }
 
         }

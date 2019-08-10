@@ -96,9 +96,6 @@ class MainFragment : DaggerFragment(),
     override fun render(state: MainViewState) {
         Timber.d("got state $state")
         binding.model = state
-        if (state.loadingError != null) {
-            adapter.clearAllRecyclerItems()
-        }
         
         val characterModelList =
                 state.characters.map {

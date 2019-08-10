@@ -108,22 +108,11 @@ class CharactersFragment : DaggerFragment(),
     fun render(state: MainViewState) {
         Timber.d("got state $state")
         binding.model = state
-        when {
-            state.pullToRefreshError != null -> return
-
-            state.loadingError != null -> {
-                adapter.clearAllRecyclerItems()
-                return
-            }
-
-            else -> {
-                val characterModelList =
-                        state.characters.map {
-                            CharacterItem(it, this)
-                        }
-                adapter.replaceItems(characterModelList, true)
-            }
-        }
+        val characterModelList =
+                state.characters.map {
+                    CharacterItem(it, this)
+                }
+        adapter.replaceItems(characterModelList, true)
     }
 
 

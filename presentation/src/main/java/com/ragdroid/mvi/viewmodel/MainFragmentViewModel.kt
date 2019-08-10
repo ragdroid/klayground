@@ -3,6 +3,7 @@ package com.ragdroid.mvi.viewmodel
 import com.ragdroid.data.MainRepository
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.main.MainAction
+import com.ragdroid.mvi.main.MainNavigation
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvvmi.core.MviViewModel
@@ -44,6 +45,7 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
                             .startWith(MainResult.DescriptionResult.DescriptionLoading(action.characterId))
                             .onErrorReturn { error ->
                                 Timber.e(error)
+                                navigate(MainNavigation.Snackbar(error.message ?: "Unknown Error"))
                                 MainResult.DescriptionResult.DescriptionError(action.characterId, error)
                             }
                 }
@@ -61,7 +63,10 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
                     }.toFlowable()
                             .map { items -> MainResult.PullToRefreshComplete(items) as MainResult }
                             .startWith(MainResult.PullToRefreshing)
-                            .onErrorReturn { error -> MainResult.PullToRefreshError(error) }
+                            .onErrorReturn { error ->
+                                navigate(MainNavigation.Snackbar(error.message ?: "Unknown Error"))
+                                MainResult.PullToRefreshError(error)
+                            }
                 }
     }
 
@@ -72,7 +77,11 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
                     mainRepository.fetchCharactersSingle().toFlowable()
                             .map { states -> MainResult.LoadingComplete(states) as MainResult }
                             .startWith(MainResult.Loading)
-                            .onErrorReturn(MainResult::LoadingError)
+                            .onErrorReturn {
+                                error ->
+                                navigate(MainNavigation.Snackbar(error.message ?: "Unknown Error"))
+                                MainResult.LoadingError(error)
+                            }
                 }
     }
 
