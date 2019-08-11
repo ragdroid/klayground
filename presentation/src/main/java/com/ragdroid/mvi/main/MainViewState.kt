@@ -94,17 +94,19 @@ sealed class MainAction: MviAction {
 sealed class MainResult: MviResult {
 
     object Loading: MainResult()
-    data class LoadingError(val throwable: Throwable): MainResult()
+    object LoadingError: MainResult()
     data class LoadingComplete(val characters: List<CharacterMarvel>): MainResult()
 
     object PullToRefreshing: MainResult()
-    data class PullToRefreshError(val throwable: Throwable): MainResult()
+    object PullToRefreshError: MainResult()
     data class PullToRefreshComplete(val characters: List<CharacterMarvel>): MainResult()
 
     sealed class DescriptionResult(val characterId: Long) : MainResult() {
         data class DescriptionLoading(private val id: Long) : DescriptionResult(id)
-        data class DescriptionError(private val id: Long, val throwable: Throwable): DescriptionResult(id)
-        data class DescriptionLoadComplete(private val id: Long, val description: String): DescriptionResult(id)
+        data class DescriptionError(private val id: Long,
+                                    val throwable: Throwable): DescriptionResult(id)
+        data class DescriptionLoadComplete(private val id: Long,
+                                           val description: String): DescriptionResult(id)
     }
 }
 

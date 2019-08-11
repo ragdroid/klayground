@@ -65,12 +65,13 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
                             .startWith(MainResult.PullToRefreshing)
                             .onErrorReturn { error ->
                                 navigate(MainNavigation.Snackbar(error.message ?: "Unknown Error"))
-                                MainResult.PullToRefreshError(error)
+                                MainResult.PullToRefreshError
                             }
                 }
     }
 
-    private fun loadingResult(loadDataActionStream: Flowable<MainAction.LoadData>): Flowable<MainResult> {
+    private fun loadingResult(loadDataActionStream: Flowable<MainAction.LoadData>)
+            : Flowable<MainResult> {
         return loadDataActionStream
                 .observeOn(Schedulers.io())
                 .flatMap { ignored ->
@@ -80,7 +81,7 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
                             .onErrorReturn {
                                 error ->
                                 navigate(MainNavigation.Snackbar(error.message ?: "Unknown Error"))
-                                MainResult.LoadingError(error)
+                                MainResult.LoadingError
                             }
                 }
     }

@@ -45,7 +45,6 @@ class MainFragment : DaggerFragment(),
     private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ItemsViewAdapter(context)
     }
-    private val descriptionClickProcessor: PublishProcessor<MainAction.LoadDescription> = PublishProcessor.create()
 
     override lateinit var viewModel: MainFragmentViewModel
 
@@ -74,6 +73,7 @@ class MainFragment : DaggerFragment(),
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
     }
 
+    private val descriptionClickProcessor = PublishProcessor.create<MainAction.LoadDescription>()
 
     override fun onCharacterDescriptionClicked(itemId: Long) {
         descriptionClickProcessor.onNext(MainAction.LoadDescription(itemId))
@@ -85,7 +85,10 @@ class MainFragment : DaggerFragment(),
 
 
     private fun pullToRefreshIntent(): Flowable<MainAction.PullToRefresh> =
-            binding.refreshLayout.refreshes().toFlowable(BackpressureStrategy.DROP).map { MainAction.PullToRefresh }
+            binding.refreshLayout.refreshes()
+                    .toFlowable(BackpressureStrategy.DROP)
+                    .map { MainAction.PullToRefresh }
+
 
     private fun loadingIntent(): Flowable<MainAction.LoadData> = Flowable.just(MainAction.LoadData)
 

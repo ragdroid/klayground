@@ -157,7 +157,7 @@ class CharactersViewModel @Inject constructor(
                     .catch { exception ->
                         Timber.e(exception)
                         navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-                        emit(MainResult.PullToRefreshError(exception))
+                        emit(MainResult.PullToRefreshError)
                     }
         }
     }
@@ -174,7 +174,7 @@ class CharactersViewModel @Inject constructor(
                     .catch { exception ->
                         Timber.e(exception)
                         navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-
+                        emit(MainResult.LoadingError)
                     }
         }
 

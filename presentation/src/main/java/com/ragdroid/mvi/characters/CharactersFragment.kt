@@ -51,8 +51,7 @@ class CharactersFragment : DaggerFragment(),
     private val adapter: ItemsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ItemsViewAdapter(context)
     }
-    //we can also use a ConflatedBroadcastChannel here
-    private val descriptionClickProcessor: PublishSubject<MainAction.LoadDescription> = PublishSubject()
+
     override val coroutineContext: CoroutineContext = Job() + Dispatchers.Main
 
     lateinit var viewModel: CharactersViewModel
@@ -85,11 +84,7 @@ class CharactersFragment : DaggerFragment(),
     }
 
 
-    override fun onCharacterDescriptionClicked(itemId: Long) {
-        launch {
-            descriptionClickProcessor.emit(MainAction.LoadDescription(itemId))
-        }
-    }
+
 
     override fun getItemPresenter(): CharacterItemPresenter {
         return this
@@ -97,9 +92,21 @@ class CharactersFragment : DaggerFragment(),
 
 
     private fun pullToRefreshIntent(): Flow<MainAction.PullToRefresh> =
-            binding.refreshLayout.refreshes().consumeAsFlow().map { MainAction.PullToRefresh }
+            binding.refreshLayout.refreshes()
+                    .consumeAsFlow()
+                    .map { MainAction.PullToRefresh }
 
     private fun loadingIntent(): Flow<MainAction.LoadData> = flow { emit(MainAction.LoadData) }
+
+
+    //we can also use a ConflatedBroadcastChannel here
+    private val descriptionClickProcessor = PublishSubject<MainAction.LoadDescription>()
+
+    override fun onCharacterDescriptionClicked(itemId: Long) {
+        launch {
+            descriptionClickProcessor.emit(MainAction.LoadDescription(itemId))
+        }
+    }
 
     private fun loadDescription(): Flow<MainAction.LoadDescription> {
         return descriptionClickProcessor
