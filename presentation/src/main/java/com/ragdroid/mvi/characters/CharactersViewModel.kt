@@ -3,6 +3,7 @@ package com.ragdroid.mvi.characters
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ragdroid.data.MainRepository
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.helpers.DispatchProvider
@@ -48,7 +49,7 @@ class CharactersViewModel @Inject constructor(
     fun navigate(navigationState: MainNavigation) = navigationLiveData.postValue(navigationState)
 
     fun processActions(actions: Flow<MainAction>) {
-        launch {
+        viewModelScope.launch {
             actionsFlow.mergeWith(actions)
                     .onEach {
                         Timber.v("onAction $it")
@@ -87,7 +88,7 @@ class CharactersViewModel @Inject constructor(
                 } catch (exception: Exception) {
                     Timber.e(exception)
                     navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-                    emit(MainResult.PullToRefreshError(exception))
+                    emit(MainResult.PullToRefreshError)
                 }
             }
             is MainAction.LoadData -> {
@@ -98,7 +99,7 @@ class CharactersViewModel @Inject constructor(
                 } catch (exception: Exception) {
                     Timber.e(exception)
                     navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-                    emit(MainResult.LoadingError(exception))
+                    emit(MainResult.LoadingError)
                 }
             }
             is MainAction.LoadDescription -> {
@@ -117,7 +118,7 @@ class CharactersViewModel @Inject constructor(
     }.catch { exception ->
         Timber.e(exception)
         navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-        emit(MainResult.LoadingError(exception))
+        emit(MainResult.LoadingError)
     }
 
     private fun actionToResultTransformer(actionsFlow: Flow<MainAction>): Flow<MainResult> {
@@ -170,7 +171,7 @@ class CharactersViewModel @Inject constructor(
                 emit(MainResult.LoadingComplete(characters))
             }
                     //uncommeent this to see unit test behavior with delays
-//                    .delayEach(1000)
+                    .delayEach(1000)
                     .catch { exception ->
                         Timber.e(exception)
                         navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
