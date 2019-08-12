@@ -29,10 +29,7 @@ class CharactersViewModel @Inject constructor(
         private val mainRepository: MainRepository,
         private val resourceProvider: ResourceProvider,
         private val dispatchProvider: DispatchProvider
-): ViewModel(), CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob().plus(dispatchProvider.main()).plus(dispatchProvider.io())
+): ViewModel() {
 
     fun onAction(action: MainAction) = broadcastChannel.offer(action)
 
@@ -66,10 +63,6 @@ class CharactersViewModel @Inject constructor(
                         Timber.v("onResult $it")
                     }
                     .scan(MainViewState.init()) { state, result: MainResult -> reduce(state, result) }
-                    .onEach {
-                        Timber.v("onState $it")
-                        stateLiveData.postValue(it)
-                    }
                     .onStart { Timber.d("subscribed to states") }
                     .collect {
                         Timber.v("onState $it")
@@ -184,9 +177,5 @@ class CharactersViewModel @Inject constructor(
 
     private fun reduce(state: MainViewState, result: MainResult): MainViewState {
         return state.reduce(result, resourceProvider)
-    }
-
-    override fun onCleared() {
-        coroutineContext.cancelChildren()
     }
 }

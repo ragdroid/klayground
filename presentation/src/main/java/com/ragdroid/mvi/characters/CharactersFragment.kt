@@ -27,14 +27,11 @@ import com.ragdroid.mvvmi.core.NavigationState
 import dagger.android.support.DaggerFragment
 import hu.akarnokd.kotlin.flow.PublishSubject
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
+import kotlinx.coroutines.flow.*
 
 /**
  * A placeholder fragment containing a simple view.
@@ -96,7 +93,7 @@ class CharactersFragment : DaggerFragment(),
                     .consumeAsFlow()
                     .map { MainAction.PullToRefresh }
 
-    private fun loadingIntent(): Flow<MainAction.LoadData> = flow { emit(MainAction.LoadData) }
+    private fun loadingIntent(): Flow<MainAction.LoadData> = flowOf(MainAction.LoadData)
 
 
     //we can also use a ConflatedBroadcastChannel here
