@@ -18,6 +18,7 @@ import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
 import com.ragdroid.mvi.helpers.SpaceItemDecoration
 import com.ragdroid.mvi.helpers.merge
+import com.ragdroid.mvi.helpers.mergeWith
 import com.ragdroid.mvi.items.CharacterItem
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainNavigation
@@ -76,7 +77,7 @@ class CharactersFragment : DaggerFragment(),
         viewModel.stateLiveData().observe(viewLifecycleOwner, Observer { render(it) })
         viewModel.navigationLiveData().observe(viewLifecycleOwner, Observer { navigate(it) })
         if (savedInstanceState == null) {
-            viewModel.processActions(loadingIntent().merge(pullToRefreshIntent(), loadDescription()))
+            viewModel.processActions(loadingIntent().mergeWith(pullToRefreshIntent()))
         }
     }
 
@@ -100,9 +101,7 @@ class CharactersFragment : DaggerFragment(),
     private val descriptionClickProcessor = PublishSubject<MainAction.LoadDescription>()
 
     override fun onCharacterDescriptionClicked(itemId: Long) {
-        launch {
-            descriptionClickProcessor.emit(MainAction.LoadDescription(itemId))
-        }
+        viewModel.onAction(MainAction.LoadDescription(itemId))
     }
 
     private fun loadDescription(): Flow<MainAction.LoadDescription> {
@@ -111,7 +110,8 @@ class CharactersFragment : DaggerFragment(),
 
     fun render(state: MainViewState) {
         Timber.d("got state $state")
-        binding.model = state
+        binding.refreshing = state.loadingState == MainViewState.LoadingState.PullToRefreshing
+        binding.loading = state.loadingState == MainViewState.LoadingState.Loading
         val characterModelList =
                 state.characters.map {
                     CharacterItem(it, this)

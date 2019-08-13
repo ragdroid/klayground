@@ -9,60 +9,60 @@ import com.ragdroid.mvvmi.core.MviResult
 import com.ragdroid.mvvmi.core.MviState
 import com.ragdroid.mvvmi.core.NavigationState
 
-/**
- * State of the MainView
- * Created by garimajain on 22/11/17.
- */
-data class MainViewState(
-        val loading: Boolean,
-        val characters: List<CharacterItemState>,
-        val pullToRefreshing: Boolean): MviState {
+data class MainViewState(val characters: List<CharacterItemState>,
+                         val emptyState: EmptyState,
+                         val loadingState: LoadingState): MviState {
+
+    sealed class EmptyState {
+        object None: EmptyState()
+        object NoData: EmptyState()
+        object NoInternet: EmptyState()
+    }
+
+    sealed class LoadingState {
+        object None: LoadingState()
+        object Loading: LoadingState()
+        object PullToRefreshing: LoadingState()
+    }
 
     companion object Factory {
-        fun init() = MainViewState(
-                loading = true,
-                characters = emptyList(),
-                pullToRefreshing = false
-        )
+        fun init() = MainViewState(emptyList(), EmptyState.NoData, LoadingState.None)
     }
 
     fun reduce(result: MainResult, resources: ResourceProvider): MainViewState {
 
-        val characters = characters
         return when (result) {
-            is MainResult.Loading -> copy(
-                    loading = true)
-            is MainResult.LoadingError -> copy(
-                    loading = false)
+            is MainResult.Loading -> copy(loadingState = LoadingState.Loading)
+            is MainResult.LoadingError -> copy(loadingState = LoadingState.None,
+                    emptyState = EmptyState.NoData)
 
             is MainResult.LoadingComplete -> {
-                val characterStates = reduceCharactersList(characters, result.characters, resources)
-                copy(
-                        loading = false,
-                        characters = characterStates)
+                val characterStates = reduceCharactersList(null, result.characters, resources)
+                copy(characterStates, loadingState = LoadingState.None,
+                        emptyState = EmptyState.None)
             }
 
-            is MainResult.PullToRefreshing -> copy(
-                    loading = false,
-                    pullToRefreshing = true)
-            is MainResult.PullToRefreshError -> copy(
-                    pullToRefreshing = false)
-            is MainResult.PullToRefreshComplete -> copy(
-                    pullToRefreshing = false,
-                    characters = reduceCharactersList(characters, result.characters, resources))
+            is MainResult.PullToRefreshing -> {
+                copy(loadingState = LoadingState.PullToRefreshing)
+            }
+            is MainResult.PullToRefreshError -> copy(loadingState = LoadingState.None)
+            is MainResult.PullToRefreshComplete ->
+                copy(characters = reduceCharactersList(characters, result.characters, resources),
+                        loadingState = LoadingState.None,
+                        emptyState = EmptyState.None)
 
             is MainResult.DescriptionResult -> {
+                val previousCharacters = characters
                 val previousItemState = findItemWithId(result.characterId)
-                val previousItemStateIndex = characters.indexOf(previousItemState)
+                val previousItemStateIndex = previousCharacters.indexOf(previousItemState)
 
                 val newItemState = previousItemState.reduce(resources, result)
 
-                val newCharactersList = characters.slice(0 until previousItemStateIndex)
+                val newCharactersList = previousCharacters.slice(0 until previousItemStateIndex)
                         .plus(listOf(newItemState))
-                        .plus(characters.slice(previousItemStateIndex + 1 until characters.size))
+                        .plus(previousCharacters.slice(previousItemStateIndex + 1 until previousCharacters.size))
                 copy(characters = newCharactersList)
             }
-
         }
     }
 
@@ -71,8 +71,7 @@ data class MainViewState(
             characters.find { it.characterId == characterId }!!
 
 
-
-    private fun reduceCharactersList(previousStateList: List<CharacterItemState>,
+    private fun reduceCharactersList(previousStateList: List<CharacterItemState>?,
                                      resultList: List<CharacterMarvel>,
                                      resources: ResourceProvider): List<CharacterItemState> {
         fun initialState(result: CharacterMarvel) =
@@ -84,6 +83,7 @@ data class MainViewState(
     }
 
 }
+
 
 sealed class MainAction: MviAction {
     object PullToRefresh: MainAction()

@@ -98,8 +98,8 @@ class MainFragment : DaggerFragment(),
 
     override fun render(state: MainViewState) {
         Timber.d("got state $state")
-        binding.model = state
-        
+        binding.refreshing = state.loadingState == MainViewState.LoadingState.PullToRefreshing
+        binding.loading = state.loadingState == MainViewState.LoadingState.Loading
         val characterModelList =
                 state.characters.map {
                     CharacterItem(it, this)

@@ -108,11 +108,12 @@ class CharactersViewModel @Inject constructor(
                 }
             }
         }
-    }.catch { exception ->
-        Timber.e(exception)
-        navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
-        emit(MainResult.LoadingError)
-    }
+    }.flowOn(Dispatchers.IO)
+            .catch { exception ->
+                Timber.e(exception)
+                navigate(MainNavigation.Snackbar(exception.message ?: "Unknown Error"))
+                emit(MainResult.LoadingError)
+            }
 
     private fun actionToResultTransformer(actionsFlow: Flow<MainAction>): Flow<MainResult> {
         return loadingResult(actionsFlow.ofType(MainAction.LoadData::class.java))

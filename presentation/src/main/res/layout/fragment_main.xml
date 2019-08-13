@@ -6,8 +6,11 @@
 
     <data>
         <variable
-            name="model"
-            type="com.ragdroid.mvi.main.MainViewState"/>
+            name="loading"
+            type="Boolean"/>
+        <variable
+            name="refreshing"
+            type="Boolean"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,13 +42,13 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="@{!model.loading}"
+            android:visibility="@{!loading}"
             android:paddingTop="@dimen/keyline_1"
             android:clipToPadding="false"
             bind:layout_constraintBottom_toBottomOf="parent"
             bind:layout_constraintEnd_toEndOf="parent"
             bind:layout_constraintStart_toStartOf="parent"
-            bind:refreshing="@{model.pullToRefreshing}">
+            bind:refreshing="@{refreshing}">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:paddingBottom="@dimen/space"
@@ -69,7 +72,7 @@
             android:layout_marginStart="@dimen/space"
             android:layout_marginTop="@dimen/space"
             android:indeterminate="true"
-            android:visibility="@{model.loading}"
+            android:visibility="@{loading}"
             bind:layout_constraintBottom_toBottomOf="parent"
             bind:layout_constraintEnd_toEndOf="parent"
             bind:layout_constraintStart_toStartOf="parent"
