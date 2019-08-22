@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.*
  */
 class CharactersFragment : DaggerFragment(),
         ItemPresenterProvider<CharacterItemPresenter>,
-        CharacterItemPresenter, CoroutineScope {
+        CharacterItemPresenter {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -50,7 +50,6 @@ class CharactersFragment : DaggerFragment(),
         ItemsViewAdapter(context)
     }
 
-    override val coroutineContext: CoroutineContext = Job() + Dispatchers.Main
 
     lateinit var viewModel: CharactersViewModel
 
@@ -74,8 +73,8 @@ class CharactersFragment : DaggerFragment(),
 
     private fun setupViewModel(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
-        viewModel.stateLiveData().observe(viewLifecycleOwner, Observer { render(it) })
-        viewModel.navigationLiveData().observe(viewLifecycleOwner, Observer { navigate(it) })
+        viewModel.stateLiveData.observe(viewLifecycleOwner, Observer { render(it) })
+        viewModel.navigationLiveData.observe(viewLifecycleOwner, Observer { navigate(it) })
         if (savedInstanceState == null) {
             viewModel.processActions(loadingIntent().mergeWith(pullToRefreshIntent()))
         }
@@ -128,8 +127,4 @@ class CharactersFragment : DaggerFragment(),
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        coroutineContext.cancel()
-    }
 }

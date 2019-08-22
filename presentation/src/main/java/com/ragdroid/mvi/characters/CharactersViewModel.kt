@@ -34,16 +34,19 @@ class CharactersViewModel @Inject constructor(
     fun onAction(action: MainAction) = broadcastChannel.offer(action)
 
     //we can also use kotlin-flow-extensions `PublishSubject` here
-    var broadcastChannel = ConflatedBroadcastChannel<MainAction>()
-    var actionsFlow = broadcastChannel.openSubscription().consumeAsFlow()
+    private var broadcastChannel = ConflatedBroadcastChannel<MainAction>()
+    var actionsFlow = broadcastChannel.asFlow()
 
-    fun stateLiveData(): LiveData<MainViewState> = stateLiveData
-    private val stateLiveData = MutableLiveData<MainViewState>()
+    val stateLiveData: LiveData<MainViewState>
+        get() = _stateLiveData
 
-    fun navigationLiveData(): LiveData<MainNavigation> = navigationLiveData
-    private val navigationLiveData = MutableLiveData<MainNavigation>()
+    private val _stateLiveData = MutableLiveData<MainViewState>()
 
-    fun navigate(navigationState: MainNavigation) = navigationLiveData.postValue(navigationState)
+    val navigationLiveData: LiveData<MainNavigation>
+            get() = _navigationLiveData
+    private val _navigationLiveData = MutableLiveData<MainNavigation>()
+
+    fun navigate(navigationState: MainNavigation) = _navigationLiveData.postValue(navigationState)
 
     fun processActions(actions: Flow<MainAction>) {
         viewModelScope.launch {
@@ -64,9 +67,10 @@ class CharactersViewModel @Inject constructor(
                     }
                     .scan(MainViewState.init()) { state, result: MainResult -> reduce(state, result) }
                     .onStart { Timber.d("subscribed to states") }
+                    .flowOn(dispatchProvider.computation())
                     .collect {
                         Timber.v("onState $it")
-                        stateLiveData.postValue(it)
+                        _stateLiveData.postValue(it)
                     }
         }
     }

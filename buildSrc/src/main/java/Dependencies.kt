@@ -59,6 +59,7 @@ object Deps {
     val lifecycleSavedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:${Versions.lifecycleSavedState}"
     val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycleRx}"
     val lifecycleViewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycleEx}"
+    val lifecycleRuntimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycleEx}"
     val navigationFragment = "android.arch.navigation:navigation-fragment-ktx:${Versions.navigationVersion}"
     val navigationUIKtx = "android.arch.navigation:navigation-ui-ktx:${Versions.navigationVersion}"
     val pagingRuntime = "androidx.paging:paging-runtime:${Versions.arch_comp_paging}"

@@ -102,6 +102,7 @@ dependencies {
     implementation Deps.coroutineBindingSwipeRefresh
     implementation Deps.flowExtensions
     implementation Deps.lifecycleViewModelKtx
+    implementation Deps.lifecycleRuntimeKtx
 
     testImplementation TestDeps.junit
     testImplementation TestDeps.mockitoKotlin
