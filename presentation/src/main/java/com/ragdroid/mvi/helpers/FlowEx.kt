@@ -1,9 +1,5 @@
 package com.ragdroid.mvi.helpers
 
-import io.reactivex.Flowable
-import io.reactivex.functions.Predicate
-import io.reactivex.internal.functions.Functions
-import io.reactivex.internal.functions.ObjectHelper
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -61,14 +57,12 @@ fun <T> Flow<T>.merge3(other: Flow<T>,
 }
 
 fun <U, V> Flow<U>.ofType(clazz: Class<V>): Flow<V> {
-    ObjectHelper.requireNonNull(clazz, "clazz is null")
     return filter {
         clazz.isInstance(it)
     }.cast(clazz)
 }
 
 fun <U, V> Flow<U>.cast(clazz: Class<V>): Flow<V> {
-    ObjectHelper.requireNonNull(clazz, "clazz is null")
     return map {
         clazz.cast(it)
     }

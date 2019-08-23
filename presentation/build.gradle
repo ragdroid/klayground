@@ -99,8 +99,6 @@ dependencies {
     implementation Deps.rxBindingSupportV4
     implementation Deps.recyclerViewAnimations
 
-    implementation Deps.coroutineBindingSwipeRefresh
-    implementation Deps.flowExtensions
     implementation Deps.lifecycleViewModelKtx
     implementation Deps.lifecycleRuntimeKtx
 

@@ -11,14 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fueled.reclaim.ItemPresenterProvider
 import com.fueled.reclaim.ItemsViewAdapter
-import com.github.satoshun.coroutinebinding.androidx.swiperefreshlayout.widget.refreshes
 import com.google.android.material.snackbar.Snackbar
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
 import com.ragdroid.mvi.helpers.SpaceItemDecoration
-import com.ragdroid.mvi.helpers.merge
-import com.ragdroid.mvi.helpers.mergeWith
 import com.ragdroid.mvi.items.CharacterItem
 import com.ragdroid.mvi.main.MainAction
 import com.ragdroid.mvi.main.MainNavigation
@@ -26,13 +23,9 @@ import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvi.models.CharacterItemPresenter
 import com.ragdroid.mvvmi.core.NavigationState
 import dagger.android.support.DaggerFragment
-import hu.akarnokd.kotlin.flow.PublishSubject
-import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 import jp.wasabeef.recyclerview.animators.FadeInAnimator
-import kotlinx.coroutines.flow.*
 
 /**
  * A placeholder fragment containing a simple view.
@@ -68,15 +61,16 @@ class CharactersFragment : DaggerFragment(),
         binding.listView.adapter = adapter
         binding.listView.itemAnimator = FadeInAnimator()
         binding.listView.addItemDecoration(decoration)
-        setupViewModel(savedInstanceState)
+        setupViewModel()
     }
 
-    private fun setupViewModel(savedInstanceState: Bundle?) {
+    private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
         viewModel.stateLiveData.observe(viewLifecycleOwner, Observer { render(it) })
         viewModel.navigationLiveData.observe(viewLifecycleOwner, Observer { navigate(it) })
-        if (savedInstanceState == null) {
-            viewModel.processActions(loadingIntent().mergeWith(pullToRefreshIntent()))
+        viewModel.onAction(MainAction.LoadData)
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.onAction(MainAction.PullToRefresh)
         }
     }
 
@@ -87,24 +81,8 @@ class CharactersFragment : DaggerFragment(),
         return this
     }
 
-
-    private fun pullToRefreshIntent(): Flow<MainAction.PullToRefresh> =
-            binding.refreshLayout.refreshes()
-                    .consumeAsFlow()
-                    .map { MainAction.PullToRefresh }
-
-    private fun loadingIntent(): Flow<MainAction.LoadData> = flowOf(MainAction.LoadData)
-
-
-    //we can also use a ConflatedBroadcastChannel here
-    private val descriptionClickProcessor = PublishSubject<MainAction.LoadDescription>()
-
     override fun onCharacterDescriptionClicked(itemId: Long) {
         viewModel.onAction(MainAction.LoadDescription(itemId))
-    }
-
-    private fun loadDescription(): Flow<MainAction.LoadDescription> {
-        return descriptionClickProcessor
     }
 
     fun render(state: MainViewState) {

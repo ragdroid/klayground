@@ -21,7 +21,7 @@ class MainRepositoryImpl @Inject constructor(
         private val config: AppConfig,
         private val helpers: Helpers): MainRepository {
 
-    override suspend fun fetchCharacters(): List<CharacterMarvel> {
+    override suspend fun fetchCharacters(): Flow<List<CharacterMarvel>> = flow {
         val timeStamp = System.currentTimeMillis()
         val charactersWrapper = marvelApi.getCharacters(
                 config.publicKey,
@@ -34,7 +34,7 @@ class MainRepositoryImpl @Inject constructor(
                 .map {
                     characterMapper.map(it)
                 }.toList()
-        return characters
+        emit(characters)
     }
 
     override fun fetchCharactersSingle(): Single<List<CharacterMarvel>> {
@@ -70,6 +70,7 @@ class MainRepositoryImpl @Inject constructor(
                 timeStamp
         )
     }
+
     private fun charactersApiSingle(timeStamp: Long): Single<TDataWrapper<List<TCharacterMarvel>>> {
         return marvelApi.getCharactersSingle(
                 config.publicKey,
@@ -81,7 +82,7 @@ class MainRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun fetchCharacter(id: Long): CharacterMarvel {
+    override suspend fun fetchCharacter(id: Long): Flow<CharacterMarvel> = flow {
         val timeStamp = System.currentTimeMillis()
         val characterWrapper = marvelApi.getCharacter(
                 id,
@@ -89,11 +90,13 @@ class MainRepositoryImpl @Inject constructor(
                 helpers.buildMD5Digest("" + timeStamp + config.privateKey
                         + config.publicKey), timeStamp)
 
-        return characterWrapper.data.results
+         val results = characterWrapper.data.results
                 .map {
                     characterMapper.map(it)
                 }.getOrNull(0) ?: throw IllegalAccessException("Character for id $id not found")
+        emit(results)
     }
+
 
 
 }
@@ -101,7 +104,7 @@ class MainRepositoryImpl @Inject constructor(
 interface MainRepository {
 
     fun fetchCharactersSingle(): Single<List<CharacterMarvel>>
-    suspend fun fetchCharacters(): List<CharacterMarvel>
-    suspend fun fetchCharacter(id: Long): CharacterMarvel
+    suspend fun fetchCharacters(): Flow<List<CharacterMarvel>>
+    suspend fun fetchCharacter(id: Long): Flow<CharacterMarvel>
     fun fetchCharacterSingle(id: Long): Single<CharacterMarvel>
 }
