@@ -31,11 +31,15 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private fun openFragment() {
         val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
+
+        val fragment = supportFragmentManager.findFragmentByTag("fraggy")
+        if (fragment == null) {
+            val fragmentTransaction = fragmentManager.beginTransaction()
 //        val fraggy = MainFragment()
-        val fraggy = CharactersFragment()
-        fragmentTransaction.replace(R.id.fragment_container, fraggy)
-        fragmentTransaction.commit()
+            val fraggy = CharactersFragment()
+            fragmentTransaction.replace(R.id.fragment_container, fraggy, "fraggy")
+            fragmentTransaction.commit()
+        }
     }
 
 }

@@ -38,7 +38,7 @@ class MainFragmentViewModelTest: BaseUnitTest() {
 
         val subscriber = viewmodel.stateFlowable().test()
 
-        viewmodel.processActions(Flowable.just(MainAction.LoadData))
+        viewmodel.onAction(MainAction.LoadData)
 
         testScheduler.triggerActions()
         testScheduler.advanceTimeBy(3000, TimeUnit.MILLISECONDS)

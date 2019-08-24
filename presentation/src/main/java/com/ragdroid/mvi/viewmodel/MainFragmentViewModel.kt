@@ -19,13 +19,15 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
                                                 private val mainRepository: MainRepository):
         MviViewModel<MainAction, MainResult, MainViewState>(MainViewState.init()) {
 
-    override fun actionsToResultTransformer(actions: Flowable<MainAction>): Flowable<MainResult> =
-            actions.publish { shared ->
-                Flowable.merge(loadingResult(shared.ofType(MainAction.LoadData::class.java)),
-                        loadDescriptionResult(shared.ofType(MainAction.LoadDescription::class.java)),
-                        pullToRefreshResult(shared.ofType(MainAction.PullToRefresh::class.java)))
+    init {
+        processActions()
+    }
 
-            }
+    override fun actionsToResultTransformer(actions: Flowable<MainAction>): Flowable<MainResult> =
+                Flowable.merge(loadingResult(actions.ofType(MainAction.LoadData::class.java)),
+                        loadDescriptionResult(actions.ofType(MainAction.LoadDescription::class.java)),
+                        pullToRefreshResult(actions.ofType(MainAction.PullToRefresh::class.java)))
+
 
     override fun reduce(previousState: MainViewState, result: MainResult): MainViewState {
         return previousState.reduce(result, resourceProvider)

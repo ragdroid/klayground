@@ -20,7 +20,7 @@ import timber.log.Timber
 abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviState>(initialState: State) : ViewModel() {
 
     private val stateProcessor: PublishProcessor<State> = PublishProcessor.create()
-    protected val actionsProcessor: PublishProcessor<Action> = PublishProcessor.create()
+    private val actionsProcessor: PublishProcessor<Action> = PublishProcessor.create()
 
     protected var currentState: State = initialState
         private set
@@ -55,12 +55,9 @@ abstract class MviViewModel<Action: MviAction, Result: MviResult, State: MviStat
             actionsToResultTransformer(actions: Flowable<Action>): Flowable<Result>
 
     @CallSuper
-    fun processActions(actions: Flowable<Action>) {
-        actionsProcessor.mergeWith(actions)
-                .doOnNext {
-                    Timber.v("onAction $it")
-                }
-                .compose(actionToResultTransformer)
+    fun processActions() {
+
+        actionsToResultTransformer(actionsProcessor)
                 .doOnNext {
                     Timber.v("onResult $it")
                 }

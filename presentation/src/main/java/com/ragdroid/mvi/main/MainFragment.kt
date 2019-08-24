@@ -67,27 +67,23 @@ class MainFragment : DaggerFragment(),
         super.onMviViewCreated(savedInstanceState)
     }
 
-    override fun provideActions() = Flowable.merge(loadingIntent(), pullToRefreshIntent(), loadDescription())
-
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.onAction(MainAction.PullToRefresh)
+        }
+        viewModel.onAction(MainAction.LoadData)
     }
 
     private val descriptionClickProcessor = PublishProcessor.create<MainAction.LoadDescription>()
 
     override fun onCharacterDescriptionClicked(itemId: Long) {
-        descriptionClickProcessor.onNext(MainAction.LoadDescription(itemId))
+        viewModel.onAction(MainAction.LoadDescription(itemId))
     }
 
     override fun getItemPresenter(): CharacterItemPresenter {
         return this
     }
-
-
-    private fun pullToRefreshIntent(): Flowable<MainAction.PullToRefresh> =
-            binding.refreshLayout.refreshes()
-                    .toFlowable(BackpressureStrategy.DROP)
-                    .map { MainAction.PullToRefresh }
 
 
     private fun loadingIntent(): Flowable<MainAction.LoadData> = Flowable.just(MainAction.LoadData)

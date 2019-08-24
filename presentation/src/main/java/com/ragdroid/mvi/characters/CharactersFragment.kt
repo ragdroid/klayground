@@ -61,14 +61,17 @@ class CharactersFragment : DaggerFragment(),
         binding.listView.adapter = adapter
         binding.listView.itemAnimator = FadeInAnimator()
         binding.listView.addItemDecoration(decoration)
-        setupViewModel()
+        setupViewModel(savedInstanceState)
     }
 
-    private fun setupViewModel() {
+    private fun setupViewModel(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
         viewModel.stateLiveData.observe(viewLifecycleOwner, Observer { render(it) })
         viewModel.navigationLiveData.observe(viewLifecycleOwner, Observer { navigate(it) })
-        viewModel.onAction(MainAction.LoadData)
+        if (savedInstanceState == null) {
+            viewModel.processActions()
+            viewModel.onAction(MainAction.LoadData)
+        }
         binding.refreshLayout.setOnRefreshListener {
             viewModel.onAction(MainAction.PullToRefresh)
         }

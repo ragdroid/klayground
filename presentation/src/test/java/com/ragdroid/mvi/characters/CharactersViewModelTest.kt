@@ -25,7 +25,7 @@ class CharactersViewModelTest: BaseUnitTest() {
 
     val mainRepository: MainRepository = mock() {
         onBlocking { fetchCharacters() } doReturn TestDataFactory.mockCharacters
-        onBlocking { fetchCharactersSingle() } doReturn Single.just(TestDataFactory.mockCharacters)
+        on { fetchCharactersSingle() } doReturn Single.just(TestDataFactory.mockCharacters)
         onBlocking { fetchCharacter(1234) } doReturn TestDataFactory.marcelCharacter1
     }
 
@@ -38,18 +38,18 @@ class CharactersViewModelTest: BaseUnitTest() {
     fun setUp() {
         super.setup()
         viewmodel = CharactersViewModel(mainRepository, resourceProvider, testDispatcherProvider)
+        viewmodel.processActions()
     }
 
     @Test
     fun testLoadData() {
 
-        val loadDataFlow = flowOf(MainAction.LoadData)
 
-        viewmodel.processActions(loadDataFlow)
+        viewmodel.onAction(MainAction.LoadData)
 
-//        testDispatcher.advanceTimeBy(2000)
+        testDispatcher.advanceTimeBy(2000L)
 
-        val state = viewmodel.stateLiveData().blockingObserve()
+        val state = viewmodel.stateLiveData.blockingObserve()
 
         println(state)
 
@@ -60,11 +60,9 @@ class CharactersViewModelTest: BaseUnitTest() {
     @Test
     fun testPullToRefresh()  {
 
-        val loadDataFlow = flowOf(MainAction.PullToRefresh)
+        viewmodel.onAction(MainAction.PullToRefresh)
 
-        viewmodel.processActions(loadDataFlow)
-
-        val state = viewmodel.stateLiveData().blockingObserve()
+        val state = viewmodel.stateLiveData.blockingObserve()
 
         println(state)
 
