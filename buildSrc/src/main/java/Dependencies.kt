@@ -1,7 +1,7 @@
 
 object Versions {
     val kotlin_version = "1.3.30"
-    val kotlinx_coroutines = "1.3.0"
+    val kotlinx_coroutines = "1.3.2"
 
     val compileSdk = 28
     val minSdk = 21
