@@ -122,7 +122,7 @@ class CharactersViewModel @Inject constructor(
     private fun loadDescriptionResult(actionsFlow: Flow<MainAction.LoadDescription>): Flow<MainResult> {
         return actionsFlow.flatMapMerge { action ->
             flow<CharacterMarvel> {
-                mainRepository.fetchCharacter(action.characterId)
+                emit(mainRepository.fetchCharacter(action.characterId))
             }
                     .onEach { delay(2000) }
                     .map { item ->
