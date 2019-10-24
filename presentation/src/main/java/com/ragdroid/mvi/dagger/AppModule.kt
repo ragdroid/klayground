@@ -9,6 +9,8 @@ import com.ragdroid.mvi.MarvelApplication
 import com.ragdroid.mvi.base.AppResourceProvider
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.helpers.AndroidHelpers
+import com.ragdroid.mvi.helpers.DispatchProvider
+import com.ragdroid.mvi.helpers.DispatchProviderImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -36,5 +38,8 @@ class AppModule {
     @Provides
     fun provideResourceProvider(application: MarvelApplication): ResourceProvider =
             AppResourceProvider(application.applicationContext)
+
+    @Provides
+    fun provideDispatchers(dispatchProviderImpl: DispatchProviderImpl): DispatchProvider = dispatchProviderImpl
 
 }

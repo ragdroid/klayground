@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.ragdroid.mvi.R
+import com.ragdroid.mvi.characters.CharactersFragment
 import com.ragdroid.mvi.databinding.ActivityMainBinding
 import com.ragdroid.mvi.helpers.BindActivity
 import com.ragdroid.mvi.viewmodel.MainViewModel
@@ -18,7 +19,6 @@ class MainActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSupportActionBar(binding.toolbar)
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         openFragment()
@@ -31,10 +31,15 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private fun openFragment() {
         val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val fraggy = MainFragment()
-        fragmentTransaction.replace(R.id.fragment_container, fraggy)
-        fragmentTransaction.commit()
+
+        val fragment = supportFragmentManager.findFragmentByTag("fraggy")
+        if (fragment == null) {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+//        val fraggy = MainFragment()
+            val fraggy = CharactersFragment()
+            fragmentTransaction.replace(R.id.fragment_container, fraggy, "fraggy")
+            fragmentTransaction.commit()
+        }
     }
 
 }

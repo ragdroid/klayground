@@ -1,41 +1,38 @@
-package com.ragdroid.mvi.main
+package com.ragdroid.mvi.characters
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ragdroid.mvvmi.core.NavigationState
 import com.fueled.reclaim.ItemPresenterProvider
 import com.fueled.reclaim.ItemsViewAdapter
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.ragdroid.mvi.R
 import com.ragdroid.mvi.databinding.FragmentMainBinding
 import com.ragdroid.mvi.helpers.BindFragment
 import com.ragdroid.mvi.helpers.SpaceItemDecoration
 import com.ragdroid.mvi.items.CharacterItem
+import com.ragdroid.mvi.main.MainAction
+import com.ragdroid.mvi.main.MainNavigation
+import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvi.models.CharacterItemPresenter
-import com.ragdroid.mvi.viewmodel.MainFragmentViewModel
-import com.ragdroid.mvvmi.core.MviView
+import com.ragdroid.mvvmi.core.NavigationState
 import dagger.android.support.DaggerFragment
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
-import io.reactivex.processors.PublishProcessor
-import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import timber.log.Timber
 import javax.inject.Inject
+import jp.wasabeef.recyclerview.animators.FadeInAnimator
 
 /**
  * A placeholder fragment containing a simple view.
  */
-class MainFragment : DaggerFragment(),
+class CharactersFragment : DaggerFragment(),
         ItemPresenterProvider<CharacterItemPresenter>,
-        CharacterItemPresenter, MviView<MainAction, MainViewState> {
+        CharacterItemPresenter {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -46,7 +43,8 @@ class MainFragment : DaggerFragment(),
         ItemsViewAdapter(context)
     }
 
-    override lateinit var viewModel: MainFragmentViewModel
+
+    lateinit var viewModel: CharactersViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -55,7 +53,7 @@ class MainFragment : DaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.toolbar.setTitle(R.string.title_rx)
+        binding.toolbar.setTitle(R.string.title_flow)
         val manager = LinearLayoutManager(context)
         val decoration = SpaceItemDecoration(resources.getDimensionPixelOffset(R.dimen.keyline_1), false, false, true, false)
         manager.orientation = RecyclerView.VERTICAL
@@ -63,36 +61,34 @@ class MainFragment : DaggerFragment(),
         binding.listView.adapter = adapter
         binding.listView.itemAnimator = FadeInAnimator()
         binding.listView.addItemDecoration(decoration)
-        setupViewModel()
-        super.onMviViewCreated(savedInstanceState)
+        setupViewModel(savedInstanceState)
     }
 
-    private fun setupViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainFragmentViewModel::class.java)
+    private fun setupViewModel(savedInstanceState: Bundle?) {
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharactersViewModel::class.java)
+        viewModel.stateLiveData.observe(viewLifecycleOwner, Observer { render(it) })
+        viewModel.navigationLiveData.observe(viewLifecycleOwner, Observer { navigate(it) })
+        if (savedInstanceState == null) {
+            viewModel.processActions()
+            viewModel.onAction(MainAction.LoadData)
+        }
         binding.refreshLayout.setOnRefreshListener {
             viewModel.onAction(MainAction.PullToRefresh)
         }
-        viewModel.onAction(MainAction.LoadData)
     }
 
-    private val descriptionClickProcessor = PublishProcessor.create<MainAction.LoadDescription>()
 
-    override fun onCharacterDescriptionClicked(itemId: Long) {
-        viewModel.onAction(MainAction.LoadDescription(itemId))
-    }
+
 
     override fun getItemPresenter(): CharacterItemPresenter {
         return this
     }
 
-
-    private fun loadingIntent(): Flowable<MainAction.LoadData> = Flowable.just(MainAction.LoadData)
-
-    private fun loadDescription(): Flowable<MainAction.LoadDescription> {
-        return descriptionClickProcessor
+    override fun onCharacterDescriptionClicked(itemId: Long) {
+        viewModel.onAction(MainAction.LoadDescription(itemId))
     }
 
-    override fun render(state: MainViewState) {
+    fun render(state: MainViewState) {
         Timber.d("got state $state")
         binding.refreshing = state.loadingState == MainViewState.LoadingState.PullToRefreshing
         binding.loading = state.loadingState == MainViewState.LoadingState.Loading
@@ -103,11 +99,8 @@ class MainFragment : DaggerFragment(),
         adapter.replaceItems(characterModelList, true)
     }
 
-    override val lifecycleOwner: LifecycleOwner
-        get() = this
 
-
-    override fun navigate(navigationState: NavigationState) {
+    fun navigate(navigationState: NavigationState) {
         when (navigationState) {
             is MainNavigation.Snackbar -> Snackbar.make(binding.root, navigationState.message, Snackbar.LENGTH_SHORT).show()
             else -> {//do nothing

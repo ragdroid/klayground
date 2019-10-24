@@ -41,10 +41,10 @@ object MainRepositorySpec: Spek({
         }
 
         on("fetching from repository") {
-            `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt()))
+            `when`(mockApi.getCharactersSingle(anyString(), anyString(), anyLong(), anyInt(), anyInt()))
                     .thenReturn(Single.just(getFakeMarvelCharacters()))
             val testObserver = TestObserver<List<CharacterMarvel>>()
-            repository.fetchCharacters()
+            repository.fetchCharactersSingle()
                     .subscribe(testObserver)
 
             it("should receive 1 value") {
@@ -61,10 +61,10 @@ object MainRepositorySpec: Spek({
 
         on("fetching from repository gives error") {
             val error = mock(Throwable::class)
-            `when`(mockApi.getCharacters(anyString(), anyString(), anyLong(), anyInt(), anyInt()))
+            `when`(mockApi.getCharactersSingle(anyString(), anyString(), anyLong(), anyInt(), anyInt()))
                     .thenReturn(Single.error(error))
             val testObserver = TestObserver<List<CharacterMarvel>>()
-            repository.fetchCharacters()
+            repository.fetchCharactersSingle()
                     .subscribe(testObserver)
             it("should error") {
                 testObserver.assertError(error)

@@ -7,19 +7,19 @@ targetCompatibility = JavaVersion.VERSION_1_8
 dependencies {
     implementation Deps.kotlin_jdk
     implementation Deps.retrofit
-    compile Deps.retrofitMoshiConverter
+    api  Deps.retrofitMoshiConverter
     implementation Deps.okhttp
-    compile Deps.loggingInterceptor
-    compile project(':mocks')
+    api Deps.loggingInterceptor
+    implementation project(':mocks')
 
     compile(TestDeps.mockWebServer) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
     implementation Deps.retrofitRxJavaAdapter
 
-    compile Deps.dagger
-    compile Deps.daggerAndroid
-    compile Deps.daggerAndroidSupport
+    api Deps.dagger
+    api Deps.daggerAndroid
+    api Deps.daggerAndroidSupport
     kapt Deps.daggerCompiler
     kapt Deps.daggerAndroidProcessor
 

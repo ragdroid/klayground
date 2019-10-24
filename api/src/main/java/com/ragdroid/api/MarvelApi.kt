@@ -23,17 +23,30 @@ const val CHARACTER_ID = "characterId"
 interface MarvelApi {
 
     @GET("characters")
-    fun getCharacters(@Query(API_KEY) publicKey: String,
-                      @Query(HASH) md5Digest: String,
-                      @Query(TIMESTAMP) timestamp: Long,
-                      @Query(OFFSET) offset: Int?,
-                      @Query(LIMIT) limit: Int?): Single<TDataWrapper<List<TCharacterMarvel>>>
+    suspend fun getCharacters(@Query(API_KEY) publicKey: String,
+                                    @Query(HASH) md5Digest: String,
+                                    @Query(TIMESTAMP) timestamp: Long,
+                                    @Query(OFFSET) offset: Int?,
+                                    @Query(LIMIT) limit: Int?): TDataWrapper<List<TCharacterMarvel>>
 
     @GET("characters/{characterId}")
-    fun getCharacter(@Path(CHARACTER_ID) characterId: Long,
-                     @Query(API_KEY) publicKey: String,
-                     @Query(HASH) md5Digest: String,
-                     @Query(TIMESTAMP) timestamp: Long): Single<TDataWrapper<List<TCharacterMarvel>>>
+    suspend fun getCharacter(@Path(CHARACTER_ID) characterId: Long,
+                                   @Query(API_KEY) publicKey: String,
+                                   @Query(HASH) md5Digest: String,
+                                   @Query(TIMESTAMP) timestamp: Long): TDataWrapper<List<TCharacterMarvel>>
+
+    @GET("characters")
+    fun getCharactersSingle(@Query(API_KEY) publicKey: String,
+                            @Query(HASH) md5Digest: String,
+                            @Query(TIMESTAMP) timestamp: Long,
+                            @Query(OFFSET) offset: Int?,
+                            @Query(LIMIT) limit: Int?): Single<TDataWrapper<List<TCharacterMarvel>>>
+
+    @GET("characters/{characterId}")
+    fun getCharacterSingle(@Path(CHARACTER_ID) characterId: Long,
+                           @Query(API_KEY) publicKey: String,
+                           @Query(HASH) md5Digest: String,
+                           @Query(TIMESTAMP) timestamp: Long): Single<TDataWrapper<List<TCharacterMarvel>>>
 
     /**
      * Retrieve list of comics by character Id

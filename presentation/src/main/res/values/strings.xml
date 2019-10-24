@@ -5,4 +5,6 @@
     <string name="description"><![CDATA[Description >]]></string>
     <string name="description_loaded"><![CDATA[Description :]]></string>
     <string name="description_loading">Description</string>
+    <string name="title_flow">Flow Characters</string>
+    <string name="title_rx">Marvel Characters</string>
 </resources>

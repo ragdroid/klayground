@@ -1,17 +1,14 @@
 package com.ragdroid.mvi.viewmodel
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
 import com.ragdroid.data.MainRepository
-import com.ragdroid.data.base.SchedulerProvider
 import com.ragdroid.mvi.TestDataFactory
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.main.MainAction
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.schedulers.TestScheduler
-import junit.framework.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.TimeUnit
@@ -24,8 +21,8 @@ class MainFragmentViewModelTest: BaseUnitTest() {
     }
 
     val mainRepository: MainRepository = mock() {
-        on { fetchCharacters() } doReturn Single.just(TestDataFactory.mockCharacters)
-        on { fetchCharacter(1234) } doReturn Single.just(TestDataFactory.marcelCharacter1)
+        on { fetchCharactersSingle() } doReturn Single.just(TestDataFactory.mockCharacters)
+        on { fetchCharacterSingle(1234) } doReturn Single.just(TestDataFactory.marcelCharacter1)
     }
 
     private lateinit var viewmodel: MainFragmentViewModel
@@ -41,7 +38,7 @@ class MainFragmentViewModelTest: BaseUnitTest() {
 
         val subscriber = viewmodel.stateFlowable().test()
 
-        viewmodel.processActions(Flowable.just(MainAction.LoadData))
+        viewmodel.onAction(MainAction.LoadData)
 
         testScheduler.triggerActions()
         testScheduler.advanceTimeBy(3000, TimeUnit.MILLISECONDS)

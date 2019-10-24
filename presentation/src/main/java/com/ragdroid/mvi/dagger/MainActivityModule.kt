@@ -1,5 +1,6 @@
 package com.ragdroid.mvi.dagger
 
+import com.ragdroid.mvi.characters.CharactersFragment
 import com.ragdroid.mvi.main.MainFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -10,7 +11,11 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class MainActivityModule {
 
-    @ContributesAndroidInjector()
+    @ContributesAndroidInjector
     @FragmentScope
     internal abstract fun mainActivityFragment(): MainFragment
+
+    @ContributesAndroidInjector
+    @FragmentScope
+    internal abstract fun charactersFragment(): CharactersFragment
 }

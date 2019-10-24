@@ -3,26 +3,31 @@ package com.ragdroid.mvi.viewmodel
 import com.ragdroid.data.MainRepository
 import com.ragdroid.mvi.base.ResourceProvider
 import com.ragdroid.mvi.main.MainAction
+import com.ragdroid.mvi.main.MainNavigation
 import com.ragdroid.mvi.main.MainResult
 import com.ragdroid.mvi.main.MainViewState
 import com.ragdroid.mvvmi.core.MviViewModel
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.rxFlowable
+import kotlinx.coroutines.rx2.rxSingle
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainFragmentViewModel @Inject constructor(private val resourceProvider: ResourceProvider,
-                                                private val repository: MainRepository):
+                                                private val mainRepository: MainRepository):
         MviViewModel<MainAction, MainResult, MainViewState>(MainViewState.init()) {
 
-    override fun actionsToResultTransformer(actions: Flowable<MainAction>): Flowable<MainResult> =
-            actions.publish { shared ->
-                Flowable.merge(loadingResult(shared.ofType(MainAction.LoadData::class.java)),
-                        loadDescriptionResult(shared.ofType(MainAction.LoadDescription::class.java)),
-                        pullToRefreshResult(shared.ofType(MainAction.PullToRefresh::class.java)))
+    init {
+        processActions()
+    }
 
-            }
+    override fun actionsToResultTransformer(actions: Flowable<MainAction>): Flowable<MainResult> =
+                Flowable.merge(loadingResult(actions.ofType(MainAction.LoadData::class.java)),
+                        loadDescriptionResult(actions.ofType(MainAction.LoadDescription::class.java)),
+                        pullToRefreshResult(actions.ofType(MainAction.PullToRefresh::class.java)))
+
 
     override fun reduce(previousState: MainViewState, result: MainResult): MainViewState {
         return previousState.reduce(result, resourceProvider)
@@ -33,7 +38,8 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
         return loadDescriptionActionStream
                 .observeOn(Schedulers.io())
                 .flatMap { action ->
-                    repository.fetchCharacter(action.characterId).toFlowable()
+
+                    mainRepository.fetchCharacterSingle(action.characterId).toFlowable()
                             .delay(2000, TimeUnit.MILLISECONDS, Schedulers.computation())
                             .map { item ->
                                 MainResult.DescriptionResult.DescriptionLoadComplete(item.id, item.description) as MainResult
@@ -41,6 +47,7 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
                             .startWith(MainResult.DescriptionResult.DescriptionLoading(action.characterId))
                             .onErrorReturn { error ->
                                 Timber.e(error)
+                                navigate(MainNavigation.Snackbar(error.message ?: "Unknown Error"))
                                 MainResult.DescriptionResult.DescriptionError(action.characterId, error)
                             }
                 }
@@ -50,21 +57,29 @@ class MainFragmentViewModel @Inject constructor(private val resourceProvider: Re
         return pullToRefreshActionStream
                 .observeOn(Schedulers.io())
                 .flatMap { ignored ->
-                    repository.fetchCharacters().toFlowable()
+                    mainRepository.fetchCharactersSingle().toFlowable()
                             .map { items -> MainResult.PullToRefreshComplete(items) as MainResult }
                             .startWith(MainResult.PullToRefreshing)
-                            .onErrorReturn { error -> MainResult.PullToRefreshError(error) }
+                            .onErrorReturn { error ->
+                                navigate(MainNavigation.Snackbar(error.message ?: "Unknown Error"))
+                                MainResult.PullToRefreshError
+                            }
                 }
     }
 
-    private fun loadingResult(loadDataActionStream: Flowable<MainAction.LoadData>): Flowable<MainResult> {
+    private fun loadingResult(loadDataActionStream: Flowable<MainAction.LoadData>)
+            : Flowable<MainResult> {
         return loadDataActionStream
                 .observeOn(Schedulers.io())
                 .flatMap { ignored ->
-                    repository.fetchCharacters().toFlowable()
+                    mainRepository.fetchCharactersSingle().toFlowable()
                             .map { states -> MainResult.LoadingComplete(states) as MainResult }
                             .startWith(MainResult.Loading)
-                            .onErrorReturn(MainResult::LoadingError)
+                            .onErrorReturn {
+                                error ->
+                                navigate(MainNavigation.Snackbar(error.message ?: "Unknown Error"))
+                                MainResult.LoadingError
+                            }
                 }
     }
 

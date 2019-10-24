@@ -5,6 +5,11 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+androidExtensions {
+    experimental = true
+}
+
+
 android {
     compileSdkVersion Versions.compileSdk
     defaultConfig {
@@ -33,13 +38,31 @@ android {
     dataBinding {
         enabled true
     }
+    sourceSets {
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+        debug.java.srcDirs += 'src/debug/kotlin'
+        main.java.srcDirs += 'src/main/kotlin'
+        release.java.srcDirs += 'src/release/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        exclude("META-INF/*.kotlin_module")
+    }
 }
 
 
 dependencies {
     api project(':mvvmi')
     api project(':data')
+
     implementation Deps.kotlin_jdk
+    implementation Deps.coroutinesAndroid
+    implementation Deps.coroutinesRxInterop
+    implementation Deps.androidKtx
 
     implementation Deps.constraintLayout
 
@@ -74,6 +97,10 @@ dependencies {
     implementation Deps.rxBindingKt
     implementation Deps.rxBindingRvKt
     implementation Deps.rxBindingSupportV4
+    implementation Deps.recyclerViewAnimations
+
+    implementation Deps.lifecycleViewModelKtx
+    implementation Deps.lifecycleRuntimeKtx
 
     testImplementation TestDeps.junit
     testImplementation TestDeps.mockitoKotlin
@@ -88,6 +115,7 @@ dependencies {
 
     debugImplementation TestDeps.leakCanary
     releaseImplementation TestDeps.leakCanaryNoOp
+    testImplementation TestDeps.coroutinesTest
 
     implementation(TestDeps.crashlytics) {
         transitive = true

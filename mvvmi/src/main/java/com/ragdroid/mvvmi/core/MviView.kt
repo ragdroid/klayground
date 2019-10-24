@@ -58,9 +58,6 @@ interface MviView<Action: MviAction, State: MviState> {
     fun onMviViewCreated(savedInstanceState: Bundle?) {
         subscribeToViewState()
         subscribeToNavigationState()
-        if (savedInstanceState == null) {
-            viewModel.processActions(provideActions())
-        }
     }
 
     /**

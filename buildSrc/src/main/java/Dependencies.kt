@@ -1,22 +1,23 @@
 
 object Versions {
-    val kotlin_version = "1.3.11"
+    val kotlin_version = "1.3.30"
+    val kotlinx_coroutines = "1.3.2"
 
     val compileSdk = 28
     val minSdk = 21
-    val retrofitVersion = "2.3.0"
+    val retrofitVersion = "2.6.0"
     val support_library = "27.1.1"
     val material = "1.0.0"
     val okhttpVersion = "3.9.1"
     val constraint_layout = "2.0.0-alpha3"
     val navigationVersion = "1.0.0-rc01"
-    val lifecycleEx = "2.0.0"
-    val lifecycleRx = "2.0.0"
+    val lifecycleEx = "2.2.0-alpha02"
+    val lifecycleRx = "2.2.0-alpha02"
     val lifecycleSavedState = "1.0.0-alpha02"
     val lifecycleCompiler = "2.0.0"
     val arch_comp       = "1.1.1"
     val arch_comp_paging= "2.1.0"
-    val dagger          = "2.20"
+    val dagger          = "2.24"
     val ktlint          = "0.10.0"
     val leakcanary      = "1.6.2"
     val rx              = "2.1.6"
@@ -29,12 +30,16 @@ object Versions {
     val reclaim         = "1.2.2"
     val rxBindings      = "2.1.1"
     val appCompat = "1.0.2"
+    val android_ktx = "1.2.0-alpha02"
+    val coroutine_binding = "1.0.0-RC2"
+    val flowExtensions = "0.0.2"
+    val wasabeef = "3.0.0"
 
     // test libraries
     val archTesting = "2.0.1"
     val kluent = "1.4"
     val spek = "1.1.5"
-    val mockitoKotlin = "1.5.0"
+    val mockitoKotlin = "2.1.0"
     val mockito = "2.8.9"
     val testRunner = "1.1.1"
     val espresso = "3.1.0"
@@ -42,7 +47,10 @@ object Versions {
 }
 
 object Deps {
-    val kotlin_jdk = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin_version}"
+    val kotlin_jdk = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
+    val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.kotlinx_coroutines}"
+    val coroutinesRxInterop = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${Versions.kotlinx_coroutines}"
+    val androidKtx = "androidx.core:core-ktx:${Versions.android_ktx}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraint_layout}"
     val timber = "com.jakewharton.timber:timber:${Versions.timberVersion}"
     val reclaim = "com.github.fueled:reclaim:${Versions.reclaim}"
@@ -50,6 +58,8 @@ object Deps {
     val lifecycleRx = "androidx.lifecycle:lifecycle-reactivestreams:${Versions.lifecycleRx}"
     val lifecycleSavedState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:${Versions.lifecycleSavedState}"
     val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycleRx}"
+    val lifecycleViewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycleEx}"
+    val lifecycleRuntimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycleEx}"
     val navigationFragment = "android.arch.navigation:navigation-fragment-ktx:${Versions.navigationVersion}"
     val navigationUIKtx = "android.arch.navigation:navigation-ui-ktx:${Versions.navigationVersion}"
     val pagingRuntime = "androidx.paging:paging-runtime:${Versions.arch_comp_paging}"
@@ -72,6 +82,9 @@ object Deps {
     val retrofitRxJavaAdapter = "com.squareup.retrofit2:adapter-rxjava2:${Versions.retrofitVersion}"
     val okhttp = "com.squareup.okhttp3:okhttp:${Versions.okhttpVersion}"
     val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.okhttpVersion}"
+    val coroutineBindingSwipeRefresh = "com.github.satoshun.coroutinebinding:coroutinebinding-swiperefreshlayout:${Versions.coroutine_binding}"
+    val flowExtensions = "com.github.akarnokd:kotlin-flow-extensions:${Versions.flowExtensions}"
+    val recyclerViewAnimations = "jp.wasabeef:recyclerview-animators:${Versions.wasabeef}"
 }
 
 object TestDeps {
@@ -87,6 +100,7 @@ object TestDeps {
     val kluent = "org.amshove.kluent:kluent:${Versions.kluent}"
     val spek = "org.jetbrains.spek:spek-api:${Versions.spek}"
     val spekJunitPlatformEngine = "org.jetbrains.spek:spek-junit-platform-engine:${Versions.spek}"
-    val mockitoKotlin = "com.nhaarman:mockito-kotlin-kt1.1:${Versions.mockitoKotlin}"
+    val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoKotlin}"
     val mockito = "org.mockito:mockito-core:${Versions.mockito}"
+    val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.kotlinx_coroutines}"
 }
